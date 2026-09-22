@@ -1,4 +1,51 @@
+# ==========================================
+# SOFTWARELABS ROBOTS.TXT
+# Engineered for optimal crawl efficiency.
+# ==========================================
+
+# 1. Global Rules for All Standard Crawlers
 User-agent: *
 Allow: /
 
-Sitemap: /sitemap.xml
+# Protect Crawl Budget: Block internal Next.js routes, APIs, and auth pages
+Disallow: /api/
+Disallow: /_next/
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /login/
+Disallow: /private/
+Disallow: /*?*
+
+# 2. Googlebot Specific Rules (Optimized for Rich Results)
+User-agent: Googlebot
+Allow: /
+# Explicitly allow media assets for Image/Video search indexing
+Allow: /*.jpg$
+Allow: /*.jpeg$
+Allow: /*.png$
+Allow: /*.webp$
+Allow: /*.svg$
+Allow: /*.mp4$
+
+# 3. Bingbot Specific Rules
+User-agent: Bingbot
+Allow: /
+
+# 4. AI & LLM Crawlers (Manage AI Training)
+# By default, they follow the '*' rules. 
+# If you want to BLOCK AI companies from training on your code/content, uncomment below:
+#
+# User-agent: GPTBot
+# Disallow: /
+#
+# User-agent: CCBot
+# Disallow: /
+#
+# User-agent: ClaudeBot
+# Disallow: /
+
+# ==========================================
+# SITEMAPS
+# ==========================================
+# Note: Replace this with your actual production domain before launch!
+Sitemap: https://softwarelabs.vercel.app/sitemap.xml
