@@ -18,12 +18,17 @@ import {
   faQuoteLeft,
   faEnvelope,
   faStar,
-  faTrophy,
-  faBrain,
-  faLaptopCode,
-  faTerminal,
-  faBolt,
+  faShieldHalved,
+  faServer,
+  faHeadset,
+  faChartLine,
+  faLayerGroup,
+  faPlug,
+  faLock,
+  faGlobe,
   faUser,
+  faBuilding,
+  faHandshake,
 } from "@fortawesome/free-solid-svg-icons";
 import { Container, SectionHeading } from "@/components/ui";
 import { SITE } from "@/lib/site";
@@ -33,17 +38,15 @@ import { PRINCIPLES, STEPS, STATS } from "@/lib/content";
 // TYPE DEFINITIONS
 // ============================================================================
 
-interface TeamMember {
+interface Leader {
   name: string;
   role: string;
   bio: string;
-  image: string;
   socials: {
     github?: string;
     linkedin?: string;
     twitter?: string;
   };
-  skills: string[];
 }
 
 interface Milestone {
@@ -61,7 +64,7 @@ interface Testimonial {
   rating: number;
 }
 
-interface ProductCategory {
+interface PlatformPillar {
   title: string;
   description: string;
   icon: any;
@@ -69,74 +72,79 @@ interface ProductCategory {
   color: string;
 }
 
+interface TrustPoint {
+  icon: any;
+  title: string;
+  description: string;
+}
+
 // ============================================================================
 // DATA CONSTANTS
 // ============================================================================
 
-const FOUNDER: TeamMember = {
+const LEADER: Leader = {
   name: "Paras Dhiman",
-  role: "Founder & Lead Engineer",
-  bio: "Passionate software engineer and entrepreneur with a vision to democratize access to production-grade code. Paras founded SoftwareLabs to bridge the gap between idea and execution, providing developers and businesses with the tools they need to ship faster.",
-  image: "/icon.svg",
+  role: "Founder & CEO",
+  bio: "Paras founded SoftwareLabs to give growing businesses the same engineering rigor, speed, and reliability that large tech companies take for granted — without the overhead of building an in-house team from scratch. He leads product, architecture, and customer partnerships end to end.",
   socials: {
     github: SITE.github,
     linkedin: SITE.socials?.linkedin || "#",
     twitter: SITE.socials?.twitter || "#",
   },
-  skills: [
-    "Full-Stack Development",
-    "System Architecture",
-    "AI/ML Integration",
-    "DevOps",
-    "Product Strategy",
-    "Open Source",
-  ],
 };
+
+const CAPABILITIES = [
+  { name: "Product Strategy", level: 92 },
+  { name: "Platform Architecture", level: 95 },
+  { name: "Cloud & DevOps", level: 88 },
+  { name: "AI & Automation", level: 85 },
+  { name: "Customer Success", level: 90 },
+];
 
 const MILESTONES: Milestone[] = [
   {
     year: "2024",
     title: "SoftwareLabs Founded",
-    description: "Paras Dhiman establishes SoftwareLabs with a mission to engineer exceptional digital products and developer tools.",
+    description: "Paras Dhiman starts SoftwareLabs with one goal: help businesses ship reliable software without the usual friction of hiring, vendors, and delays.",
     icon: faRocket,
   },
   {
     year: "2024",
-    title: "First Products Launched",
-    description: "Released initial suite of premium source code products and developer tools, gaining traction in the community.",
-    icon: faCode,
+    title: "First Clients Onboarded",
+    description: "Early SaaS and e-commerce teams come on board for platform builds, kicking off a track record of on-time, production-grade delivery.",
+    icon: faHandshake,
   },
   {
     year: "2025",
-    title: "AI Integration",
-    description: "Expanded offerings to include AI-powered systems and workflows, staying ahead of the technology curve.",
-    icon: faBrain,
+    title: "AI & Automation Added",
+    description: "The platform expands to include AI-assisted workflows and automation, helping clients cut manual ops and move faster.",
+    icon: faLightbulb,
   },
   {
     year: "2026",
-    title: "Global Recognition",
-    description: "Reached 10+ shipped projects and established SoftwareLabs as a trusted name in premium software engineering.",
-    icon: faTrophy,
+    title: "Scaling Nationwide & Beyond",
+    description: "SoftwareLabs crosses 10+ shipped platforms and starts serving businesses across India and international markets.",
+    icon: faGlobe,
   },
 ];
 
 const TESTIMONIALS: Testimonial[] = [
   {
-    quote: "SoftwareLabs delivered beyond our expectations. The code quality and architecture were exceptional, setting a new standard for our development team.",
+    quote: "SoftwareLabs delivered beyond our expectations. The architecture and code quality set a new bar for our engineering team.",
     author: "Sarah Chen",
     role: "CTO",
     company: "TechVentures Inc.",
     rating: 5,
   },
   {
-    quote: "The source code templates from SoftwareLabs saved us months of development time. Clean, well-documented, and production-ready.",
+    quote: "They moved fast without cutting corners. Onboarding, migration, and support all felt like working with an in-house team.",
     author: "Marcus Johnson",
     role: "Lead Developer",
     company: "StartupXYZ",
     rating: 5,
   },
   {
-    quote: "Working with Paras and the SoftwareLabs team was a game-changer. Their expertise in AI integration helped us launch our product 3x faster.",
+    quote: "Working with Paras and the SoftwareLabs team was a turning point for us. Their AI integration got us to market three times faster.",
     author: "Emily Rodriguez",
     role: "Product Manager",
     company: "InnovateLabs",
@@ -144,42 +152,65 @@ const TESTIMONIALS: Testimonial[] = [
   },
 ];
 
-const PRODUCT_CATEGORIES: ProductCategory[] = [
+const PLATFORM_PILLARS: PlatformPillar[] = [
   {
-    title: "Web Applications",
-    description: "Full-stack, production-ready web applications built with modern technologies and best practices.",
-    icon: faLaptopCode,
-    items: ["SaaS Platforms", "E-commerce Solutions", "Dashboard Systems", "Real-time Applications"],
+    title: "Core Platform",
+    description: "A dependable foundation your business can build on — designed for uptime, not just launch day.",
+    icon: faLayerGroup,
+    items: ["Multi-tenant Architecture", "Role-based Access", "Usage Analytics", "Admin Dashboards"],
     color: "from-blue-500 to-cyan-400",
   },
   {
-    title: "Source Code",
-    description: "Premium, reusable codebases and boilerplates designed to accelerate your development workflow.",
-    icon: faCode,
-    items: ["Next.js Templates", "React Components", "TypeScript Utilities", "API Boilerplates"],
+    title: "Integrations & API",
+    description: "Connect SoftwareLabs into the tools your team already runs on, with a clean, documented API.",
+    icon: faPlug,
+    items: ["REST & Webhook APIs", "Payment Gateways", "CRM & Email Sync", "Custom Connectors"],
     color: "from-purple-500 to-pink-400",
   },
   {
-    title: "Developer Tools",
-    description: "CLI tools, SDKs, and utilities that make developers more productive and efficient.",
-    icon: faTerminal,
-    items: ["CLI Applications", "Build Tools", "Code Generators", "Testing Frameworks"],
+    title: "Security & Compliance",
+    description: "Built with enterprise data-handling practices from day one — not bolted on after the fact.",
+    icon: faShieldHalved,
+    items: ["Encrypted Data at Rest", "Access Auditing", "Role-based Permissions", "Regular Security Reviews"],
     color: "from-green-500 to-emerald-400",
   },
   {
-    title: "AI Systems",
-    description: "Intelligent applications powered by cutting-edge AI and machine learning technologies.",
-    icon: faBrain,
-    items: ["Chatbot Systems", "RAG Applications", "AI Workflows", "ML Pipelines"],
+    title: "AI & Automation",
+    description: "Automation layers and AI-assisted workflows that cut manual work out of daily operations.",
+    icon: faLightbulb,
+    items: ["Workflow Automation", "AI-assisted Support", "Smart Reporting", "Predictive Insights"],
     color: "from-orange-500 to-red-400",
   },
 ];
 
+const TRUST_POINTS: TrustPoint[] = [
+  {
+    icon: faServer,
+    title: "Built for Reliability",
+    description: "Infrastructure and monitoring designed to keep your business running, with proactive alerts before issues reach your users.",
+  },
+  {
+    icon: faHeadset,
+    title: "Real Support, Real People",
+    description: "Direct access to the team that built your platform — no ticket queues disappearing into a black hole.",
+  },
+  {
+    icon: faLock,
+    title: "Data Handled Responsibly",
+    description: "Sensible defaults on encryption, access control, and backups so your data stays yours.",
+  },
+  {
+    icon: faChartLine,
+    title: "Built to Scale With You",
+    description: "Architecture decisions made for where your business is headed, not just where it is today.",
+  },
+];
+
 const ACHIEVEMENTS = [
-  { icon: faCode, value: "50K+", label: "Lines of Code Written", description: "Clean, tested, production-ready" },
-  { icon: faUsers, value: "1000+", label: "Developers Served", description: "Across 30+ countries" },
+  { icon: faBuilding, value: "50+", label: "Businesses Served", description: "Across SaaS, e-commerce & services" },
+  { icon: faUsers, value: "1000+", label: "End Users Supported", description: "Across 30+ countries" },
   { icon: faAward, value: "100%", label: "Client Satisfaction", description: "5-star rated delivery" },
-  { icon: faBolt, value: "10x", label: "Faster Delivery", description: "Compared to industry average" },
+  { icon: faChartLine, value: "10x", label: "Faster Time-to-Market", description: "Vs. building in-house from scratch" },
 ];
 
 // ============================================================================
@@ -222,7 +253,7 @@ function StatsCounter({ end, suffix = "", prefix = "", duration = 2000, label }:
   );
 }
 
-function SkillBar({ skill, level, delay = 0 }: { skill: string; level: number; delay?: number }) {
+function CapabilityBar({ skill, level, delay = 0 }: { skill: string; level: number; delay?: number }) {
   const [width, setWidth] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -234,13 +265,13 @@ function SkillBar({ skill, level, delay = 0 }: { skill: string; level: number; d
 
   useEffect(() => {
     const observer = new IntersectionObserver(([entry]) => { if (entry.isIntersecting) setIsVisible(true); }, { threshold: 0.1 });
-    const element = document.getElementById(`skill-${skill}`);
+    const element = document.getElementById(`capability-${skill}`);
     if (element) observer.observe(element);
     return () => observer.disconnect();
   }, [skill]);
 
   return (
-    <div id={`skill-${skill}`} className="mb-6">
+    <div id={`capability-${skill}`} className="mb-6">
       <div className="flex justify-between mb-2">
         <span className="text-sm font-medium text-lab-ice">{skill}</span>
         <span className="text-sm text-lab-accent">{level}%</span>
@@ -291,40 +322,40 @@ function TestimonialCard({ testimonial, index }: { testimonial: Testimonial; ind
   );
 }
 
-function ProductCategoryCard({ category, index }: { category: ProductCategory; index: number }) {
+function PlatformPillarCard({ pillar, index }: { pillar: PlatformPillar; index: number }) {
   return (
     <div className="relative p-8 rounded-2xl bg-lab-blue/20 border border-lab-accent/20 backdrop-blur-sm overflow-hidden group hover:border-lab-accent/40 transition-all duration-500" style={{ animationDelay: `${index * 100}ms` }}>
-      <div className={`absolute inset-0 bg-gradient-to-br ${category.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
-      <div className={`w-16 h-16 rounded-xl bg-gradient-to-br ${category.color} flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-        <FontAwesomeIcon icon={category.icon} className="text-2xl text-white" />
+      <div className={`absolute inset-0 bg-gradient-to-br ${pillar.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
+      <div className={`w-16 h-16 rounded-xl bg-gradient-to-br ${pillar.color} flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+        <FontAwesomeIcon icon={pillar.icon} className="text-2xl text-white" />
       </div>
-      <h3 className="text-2xl font-bold text-lab-ice mb-3">{category.title}</h3>
-      <p className="text-lab-ice/70 mb-6 leading-relaxed">{category.description}</p>
+      <h3 className="text-2xl font-bold text-lab-ice mb-3">{pillar.title}</h3>
+      <p className="text-lab-ice/70 mb-6 leading-relaxed">{pillar.description}</p>
       <ul className="space-y-2">
-        {category.items.map((item, i) => (
+        {pillar.items.map((item, i) => (
           <li key={i} className="flex items-center gap-2 text-sm text-lab-ice/60 group-hover:text-lab-ice/80 transition-colors duration-300">
             <FontAwesomeIcon icon={faCheckCircle} className="text-lab-accent text-xs" />
             {item}
           </li>
         ))}
       </ul>
-      <div className="mt-6 flex items-center gap-2 text-lab-accent opacity-0 group-hover:opacity-100 transform translate-x-[-10px] group-hover:translate-x-0 transition-all duration-300">
-        <span className="text-sm font-semibold">Explore</span>
-        <FontAwesomeIcon icon={faArrowRight} className="text-sm" />
-      </div>
     </div>
   );
 }
 
-function FounderCard() {
-  const skills = [
-    { name: "Full-Stack Development", level: 95 },
-    { name: "System Architecture", level: 90 },
-    { name: "AI/ML Integration", level: 85 },
-    { name: "DevOps & Cloud", level: 88 },
-    { name: "Product Strategy", level: 92 },
-  ];
+function TrustCard({ point, index }: { point: TrustPoint; index: number }) {
+  return (
+    <div className="p-6 rounded-xl bg-lab-blue/20 border border-lab-accent/20 backdrop-blur-sm hover:border-lab-accent/40 transition-all duration-300 group" style={{ animationDelay: `${index * 75}ms` }}>
+      <div className="w-12 h-12 rounded-lg bg-lab-accent/10 border border-lab-accent/30 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+        <FontAwesomeIcon icon={point.icon} className="text-lab-accent text-lg" />
+      </div>
+      <h4 className="font-bold text-lab-ice mb-2">{point.title}</h4>
+      <p className="text-sm text-lab-ice/60 leading-relaxed">{point.description}</p>
+    </div>
+  );
+}
 
+function LeadershipCard() {
   return (
     <div className="grid lg:grid-cols-2 gap-12 items-center">
       <div className="relative">
@@ -333,14 +364,14 @@ function FounderCard() {
           <div className="w-full h-full bg-gradient-to-br from-lab-blue via-lab-navy to-lab-blue flex items-center justify-center">
             <div className="text-center p-8">
               <FontAwesomeIcon icon={faUser} className="text-8xl text-lab-accent/40 mb-4" />
-              <p className="text-lab-ice/60 font-mono text-sm">{FOUNDER.name}</p>
+              <p className="text-lab-ice/60 font-mono text-sm">{LEADER.name}</p>
             </div>
           </div>
           <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-lab-navy to-transparent">
             <div className="flex gap-6 text-center">
               <div><div className="text-2xl font-bold text-lab-ice">5+</div><div className="text-xs text-lab-ice/60">Years Exp.</div></div>
               <div className="w-px bg-lab-accent/30" />
-              <div><div className="text-2xl font-bold text-lab-ice">50+</div><div className="text-xs text-lab-ice/60">Projects</div></div>
+              <div><div className="text-2xl font-bold text-lab-ice">50+</div><div className="text-xs text-lab-ice/60">Clients Served</div></div>
               <div className="w-px bg-lab-accent/30" />
               <div><div className="text-2xl font-bold text-lab-ice">100%</div><div className="text-xs text-lab-ice/60">Commitment</div></div>
             </div>
@@ -351,21 +382,21 @@ function FounderCard() {
 
       <div>
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-lab-blue/40 border border-lab-accent/30 text-lab-accent text-sm font-mono mb-6">
-          <FontAwesomeIcon icon={faStar} className="text-xs" /> Meet the Founder
+          <FontAwesomeIcon icon={faStar} className="text-xs" /> Leadership
         </div>
-        <h2 className="text-4xl sm:text-5xl font-bold text-lab-ice mb-4">{FOUNDER.name}</h2>
-        <p className="text-xl text-lab-accent mb-6 font-medium">{FOUNDER.role}</p>
-        <p className="text-lab-ice/70 leading-relaxed mb-8">{FOUNDER.bio}</p>
+        <h2 className="text-4xl sm:text-5xl font-bold text-lab-ice mb-4">{LEADER.name}</h2>
+        <p className="text-xl text-lab-accent mb-6 font-medium">{LEADER.role}</p>
+        <p className="text-lab-ice/70 leading-relaxed mb-8">{LEADER.bio}</p>
 
         <div className="mb-8">
           <h3 className="text-lg font-bold text-lab-ice mb-6 flex items-center gap-2">
-            <FontAwesomeIcon icon={faCode} className="text-lab-accent" /> Core Expertise
+            <FontAwesomeIcon icon={faCode} className="text-lab-accent" /> Core Capabilities
           </h3>
-          {skills.map((skill, index) => <SkillBar key={skill.name} skill={skill.name} level={skill.level} delay={index * 100} />)}
+          {CAPABILITIES.map((cap, index) => <CapabilityBar key={cap.name} skill={cap.name} level={cap.level} delay={index * 100} />)}
         </div>
 
         <div className="flex gap-4">
-          {Object.entries(FOUNDER.socials).map(([platform, url]) =>
+          {Object.entries(LEADER.socials).map(([platform, url]) =>
             url && url !== "#" ? (
               <a key={platform} href={url} target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-lg border border-lab-accent/30 bg-lab-blue/30 flex items-center justify-center text-lab-ice/70 hover:text-lab-accent hover:border-lab-accent hover:bg-lab-accent/10 transition-all duration-300 hover:shadow-lg hover:shadow-lab-accent/20" aria-label={platform}>
                 <FontAwesomeIcon icon={platform === "github" ? faGithub : platform === "linkedin" ? faLinkedin : faTwitter} className="text-lg" />
@@ -395,17 +426,19 @@ export default function AboutPage() {
         <div className="text-center max-w-3xl mx-auto mb-20">
           <p className="font-mono text-xs uppercase tracking-widest text-lab-accent mb-4">~/about</p>
           <h1 className="text-5xl sm:text-6xl font-extrabold text-lab-ice mb-6 uppercase leading-tight">
-            About <span className="text-lab-accent">SoftwareLabs</span>
+            The Software Partner Behind <span className="text-lab-accent">Growing Businesses</span>
           </h1>
-          <p className="text-xl text-lab-ice/70 leading-relaxed">
-            We engineer exceptional digital products and developer tools that empower builders to ship faster, scale smarter, and innovate fearlessly.
+          <p className="text-xl text-lab-ice/70 leading-relaxed mb-6">
+            SoftwareLabs is a business software platform and engineering partner — we build, ship, and support the systems companies run on, so founders and teams can focus on customers instead of infrastructure.
           </p>
+          <p className="text-sm text-lab-ice/50 font-mono">🇮🇳 Headquartered in Chandigarh, India — serving businesses worldwide</p>
         </div>
 
-        {/* Founder Section */}
-        <div className="mb-32">
-          <SectionHeading path="founder" lines={["Meet the", "Founder"]} tone="dark" className="mb-12" />
-          <FounderCard />
+        {/* Trust bar */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-32">
+          {TRUST_POINTS.map((point, index) => (
+            <TrustCard key={point.title} point={point} index={index} />
+          ))}
         </div>
 
         {/* Mission/Vision/Values Tabs */}
@@ -432,9 +465,9 @@ export default function AboutPage() {
               <div className="grid md:grid-cols-2 gap-8">
                 <div>
                   <h3 className="text-2xl font-bold text-lab-ice mb-4">Our Mission</h3>
-                  <p className="text-lab-ice/70 leading-relaxed mb-6">To democratize access to production-grade software by providing developers and businesses with premium tools, templates, and expertise that accelerate development and eliminate technical debt.</p>
+                  <p className="text-lab-ice/70 leading-relaxed mb-6">To give growing businesses production-grade software and the team behind it — without the cost and time of building an engineering org from scratch.</p>
                   <ul className="space-y-3">
-                    {["Ship 10x faster with our proven boilerplates", "Learn from production-ready code examples", "Build with confidence using tested patterns"].map((item, i) => (
+                    {["Launch platforms 10x faster than an in-house build", "Get a real engineering team, not a ticket queue", "Scale on architecture built for growth from day one"].map((item, i) => (
                       <li key={i} className="flex items-start gap-3">
                         <FontAwesomeIcon icon={faCheckCircle} className="text-lab-accent mt-1" />
                         <span className="text-lab-ice/80">{item}</span>
@@ -452,9 +485,9 @@ export default function AboutPage() {
               <div className="grid md:grid-cols-2 gap-8">
                 <div>
                   <h3 className="text-2xl font-bold text-lab-ice mb-4">Our Vision</h3>
-                  <p className="text-lab-ice/70 leading-relaxed mb-6">A world where every developer has access to the tools and knowledge needed to build exceptional software, and where technical excellence is the standard, not the exception.</p>
+                  <p className="text-lab-ice/70 leading-relaxed mb-6">A world where any business, anywhere, can run on software that's fast, secure, and built to last — backed by a partner that treats their product like its own.</p>
                   <ul className="space-y-3">
-                    {["Empower 1 million developers by 2030", "Set new standards for code quality", "Bridge the gap between learning and shipping"].map((item, i) => (
+                    {["Become the go-to software partner for 1,000+ businesses", "Set the standard for delivery speed and support quality", "Bridge the gap between a great idea and a shipped product"].map((item, i) => (
                       <li key={i} className="flex items-start gap-3">
                         <FontAwesomeIcon icon={faCheckCircle} className="text-lab-accent mt-1" />
                         <span className="text-lab-ice/80">{item}</span>
@@ -485,12 +518,12 @@ export default function AboutPage() {
           </div>
         </div>
 
-        {/* What We Build */}
+        {/* The Platform */}
         <div className="mb-32">
-          <SectionHeading path="products" lines={["What We", "Build"]} tone="dark" className="mb-12" />
+          <SectionHeading path="platform" lines={["The", "Platform"]} tone="dark" className="mb-12" />
           <div className="grid md:grid-cols-2 gap-6">
-            {PRODUCT_CATEGORIES.map((category, index) => (
-              <ProductCategoryCard key={category.title} category={category} index={index} />
+            {PLATFORM_PILLARS.map((pillar, index) => (
+              <PlatformPillarCard key={pillar.title} pillar={pillar} index={index} />
             ))}
           </div>
         </div>
@@ -525,23 +558,15 @@ export default function AboutPage() {
           </div>
         </div>
 
-        {/* Tech Stack */}
+        {/* Leadership */}
         <div className="mb-32">
-          <SectionHeading path="stack" lines={["Tech", "Stack"]} tone="dark" className="mb-12" />
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-            {["Nx", "Re", "Ts", "Nd", "Cf", "Sb", "Pg", "Py", "Tw", "Gh", "Ai", "Dk"].map((tech, index) => (
-              <div key={tech} className="group p-6 rounded-xl bg-lab-blue/20 border border-lab-accent/20 text-center hover:border-lab-accent/40 hover:bg-lab-accent/10 transition-all duration-300 hover:-translate-y-1" style={{ animationDelay: `${index * 50}ms` }}>
-                <div className="text-2xl font-bold text-lab-accent mb-1 group-hover:scale-110 transition-transform duration-300">{tech}</div>
-                <div className="text-sm font-medium text-lab-ice mb-1">Technology</div>
-                <div className="text-xs text-lab-ice/50">Stack</div>
-              </div>
-            ))}
-          </div>
+          <SectionHeading path="leadership" lines={["Meet the", "Founder"]} tone="dark" className="mb-12" />
+          <LeadershipCard />
         </div>
 
         {/* Testimonials */}
         <div className="mb-32">
-          <SectionHeading path="testimonials" lines={["Client", "Stories"]} tone="dark" className="mb-12" />
+          <SectionHeading path="testimonials" lines={["Trusted", "By Teams"]} tone="dark" className="mb-12" />
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {TESTIMONIALS.map((testimonial, index) => (
               <TestimonialCard key={index} testimonial={testimonial} index={index} />
@@ -551,7 +576,7 @@ export default function AboutPage() {
 
         {/* Process */}
         <div className="mb-32">
-          <SectionHeading path="process" lines={["How We", "Work"]} tone="dark" className="mb-12" />
+          <SectionHeading path="process" lines={["How We", "Deliver"]} tone="dark" className="mb-12" />
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {STEPS.map((step, index) => {
               const IconComponent = step.icon;
@@ -578,19 +603,20 @@ export default function AboutPage() {
           <div className="absolute top-0 right-0 w-96 h-96 bg-lab-accent/10 blur-[120px] rounded-full" />
           <div className="relative z-10 text-center max-w-3xl mx-auto">
             <h2 className="text-4xl sm:text-5xl font-bold text-lab-ice mb-6">
-              Ready to Build Something <span className="text-lab-accent">Amazing</span>?
+              Ready to Build Your <span className="text-lab-accent">Business Platform</span>?
             </h2>
             <p className="text-xl text-lab-ice/70 mb-10 leading-relaxed">
-              Let's collaborate to bring your vision to life with production-grade code, modern architecture, and relentless attention to detail.
+              Talk to our team about your product, timeline, and budget — and get a plan for how SoftwareLabs can ship it with you.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a href="#contact" className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-lg bg-lab-accent text-lab-navy font-bold hover:bg-lab-ice transition-all duration-300 hover:shadow-xl hover:shadow-lab-accent/30 hover:scale-105">
-                <FontAwesomeIcon icon={faEnvelope} /> Get in Touch
+                <FontAwesomeIcon icon={faEnvelope} /> Talk to Our Team
               </a>
               <a href="#products" className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-lg border border-lab-accent/40 bg-lab-blue/30 text-lab-ice font-semibold hover:border-lab-accent hover:bg-lab-blue/50 transition-all duration-300">
-                <FontAwesomeIcon icon={faCode} /> View Products
+                <FontAwesomeIcon icon={faLayerGroup} /> Explore the Platform
               </a>
             </div>
+            <p className="mt-8 text-xs text-lab-ice/40 font-mono">Built with ❤️ in Chandigarh, India — by SoftwareLabs</p>
           </div>
         </div>
       </Container>
