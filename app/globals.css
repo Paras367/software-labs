@@ -1,0 +1,174 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ------------------------------------------------------------------ */
+/* Base                                                                */
+/* ------------------------------------------------------------------ */
+:root {
+  --lab-navy: #0b2545;
+  --lab-blue: #134074;
+  --lab-accent: #5b9bd5;
+  --lab-ice: #dceaf7;
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5.5rem;
+  background: var(--lab-navy);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  @apply bg-lab-navy font-sans text-lab-ice antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: rgba(91, 155, 213, 0.5);
+  color: #fff;
+}
+
+:focus-visible {
+  outline: 2px solid var(--lab-accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Light sections need a darker focus ring for contrast */
+.on-light :focus-visible {
+  outline-color: var(--lab-blue);
+}
+
+/* ------------------------------------------------------------------ */
+/* Technical surfaces                                                  */
+/* ------------------------------------------------------------------ */
+@layer utilities {
+  .bg-grid-dark {
+    background-image:
+      linear-gradient(rgba(91, 155, 213, 0.11) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(91, 155, 213, 0.11) 1px, transparent 1px);
+    background-size: 56px 56px;
+  }
+  .bg-grid-light {
+    background-image:
+      linear-gradient(rgba(11, 37, 69, 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(11, 37, 69, 0.07) 1px, transparent 1px);
+    background-size: 56px 56px;
+  }
+  .mask-radial {
+    -webkit-mask-image: radial-gradient(ellipse 70% 60% at 60% 35%, #000 25%, transparent 78%);
+    mask-image: radial-gradient(ellipse 70% 60% at 60% 35%, #000 25%, transparent 78%);
+  }
+  .mask-fade-b {
+    -webkit-mask-image: linear-gradient(to bottom, #000 40%, transparent);
+    mask-image: linear-gradient(to bottom, #000 40%, transparent);
+  }
+  .text-outline {
+    color: transparent;
+    -webkit-text-stroke: 1.5px currentColor;
+  }
+}
+
+@layer components {
+  /* Radial blue glow used behind hero + CTA */
+  .glow-field {
+    background:
+      radial-gradient(60% 55% at 78% 28%, rgba(91, 155, 213, 0.24), transparent 70%),
+      radial-gradient(50% 45% at 8% 92%, rgba(19, 64, 116, 0.85), transparent 72%);
+  }
+
+  /* Very slow drifting gradient sheen */
+  .sheen {
+    background-image: linear-gradient(
+      120deg,
+      rgba(19, 64, 116, 0.55),
+      rgba(11, 37, 69, 0) 38%,
+      rgba(91, 155, 213, 0.13) 68%,
+      rgba(19, 64, 116, 0.5)
+    );
+    background-size: 220% 220%;
+  }
+
+  /* Crop marks — two opposite corners, like a printed blueprint */
+  .crop {
+    position: relative;
+  }
+  .crop::before,
+  .crop::after {
+    content: "";
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-color: var(--lab-accent);
+    pointer-events: none;
+    transition: width 0.3s ease, height 0.3s ease;
+  }
+  .crop::before {
+    top: -1px;
+    left: -1px;
+    border-top: 2px solid;
+    border-left: 2px solid;
+    border-top-left-radius: 6px;
+  }
+  .crop::after {
+    right: -1px;
+    bottom: -1px;
+    border-bottom: 2px solid;
+    border-right: 2px solid;
+    border-bottom-right-radius: 6px;
+  }
+  .crop:hover::before,
+  .crop:hover::after {
+    width: 22px;
+    height: 22px;
+  }
+
+  /* Measuring-tape ruler used as a section edge */
+  .ruler {
+    height: 12px;
+    background-image:
+      linear-gradient(90deg, currentColor 1px, transparent 1px),
+      linear-gradient(90deg, currentColor 1px, transparent 1px);
+    background-size: 8px 5px, 40px 12px;
+    background-repeat: repeat-x;
+    background-position: 0 100%, 0 100%;
+    opacity: 0.4;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Scroll reveal (progressive enhancement — content is visible w/o JS) */
+/* ------------------------------------------------------------------ */
+html.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.8s cubic-bezier(0.2, 0.7, 0.2, 1),
+    transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-delay: var(--d, 0ms);
+}
+html.js [data-reveal].is-in {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  html.js [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
