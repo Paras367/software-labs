@@ -6,7 +6,6 @@ import {
   faGithub,
   faLinkedin,
   faTwitter,
-  faProductHunt,
 } from "@fortawesome/free-brands-svg-icons";
 import {
   faArrowRight,
@@ -15,39 +14,16 @@ import {
   faLightbulb,
   faUsers,
   faAward,
-  faChartLine,
-  faShieldAlt,
-  faInfinity,
   faCheckCircle,
   faQuoteLeft,
   faEnvelope,
-  faMapMarkerAlt,
-  faCalendar,
-  faGraduationCap,
-  faBriefcase,
-  faHeart,
   faStar,
   faTrophy,
-  faGem,
-  faFire,
-  faBolt, // Replaced faZap with faBolt
   faBrain,
   faLaptopCode,
-  faCloud,
-  faDatabase,
-  faMobileAlt,
-  faPalette,
-  faCog,
-  faLayerGroup,
-  faProjectDiagram,
-  faCodeBranch,
   faTerminal,
-  faServer,
-  faMicrochip,
+  faBolt,
   faUser,
-  faSearch,
-  faCogs,
-  faBug,
 } from "@fortawesome/free-solid-svg-icons";
 import { Container, SectionHeading } from "@/components/ui";
 import { SITE } from "@/lib/site";
@@ -74,7 +50,7 @@ interface Milestone {
   year: string;
   title: string;
   description: string;
-  icon: any; // Font Awesome icon
+  icon: any;
 }
 
 interface Testimonial {
@@ -88,7 +64,7 @@ interface Testimonial {
 interface ProductCategory {
   title: string;
   description: string;
-  icon: any; // Font Awesome icon
+  icon: any;
   items: string[];
   color: string;
 }
@@ -101,11 +77,11 @@ const FOUNDER: TeamMember = {
   name: "Paras Dhiman",
   role: "Founder & Lead Engineer",
   bio: "Passionate software engineer and entrepreneur with a vision to democratize access to production-grade code. Paras founded SoftwareLabs to bridge the gap between idea and execution, providing developers and businesses with the tools they need to ship faster.",
-  image: "/icon.svg", // TODO: Add actual image
+  image: "/icon.svg",
   socials: {
     github: SITE.github,
-    linkedin: SITE.socials.linkedin,
-    twitter: SITE.socials.twitter,
+    linkedin: SITE.socials?.linkedin || "#",
+    twitter: SITE.socials?.twitter || "#",
   },
   skills: [
     "Full-Stack Development",
@@ -200,45 +176,17 @@ const PRODUCT_CATEGORIES: ProductCategory[] = [
 ];
 
 const ACHIEVEMENTS = [
-  {
-    icon: faCode,
-    value: "50K+",
-    label: "Lines of Code Written",
-    description: "Clean, tested, production-ready",
-  },
-  {
-    icon: faUsers,
-    value: "1000+",
-    label: "Developers Served",
-    description: "Across 30+ countries",
-  },
-  {
-    icon: faAward,
-    value: "100%",
-    label: "Client Satisfaction",
-    description: "5-star rated delivery",
-  },
-  {
-    icon: faBolt, // Fixed: Replaced faZap with faBolt
-    value: "10x",
-    label: "Faster Delivery",
-    description: "Compared to industry average",
-  },
+  { icon: faCode, value: "50K+", label: "Lines of Code Written", description: "Clean, tested, production-ready" },
+  { icon: faUsers, value: "1000+", label: "Developers Served", description: "Across 30+ countries" },
+  { icon: faAward, value: "100%", label: "Client Satisfaction", description: "5-star rated delivery" },
+  { icon: faBolt, value: "10x", label: "Faster Delivery", description: "Compared to industry average" },
 ];
 
 // ============================================================================
-// COMPONENT: StatsCounter (Animated Counter)
+// SUB-COMPONENTS
 // ============================================================================
 
-interface StatsCounterProps {
-  end: number;
-  suffix?: string;
-  prefix?: string;
-  duration?: number;
-  label: string;
-}
-
-function StatsCounter({ end, suffix = "", prefix = "", duration = 2000, label }: StatsCounterProps) {
+function StatsCounter({ end, suffix = "", prefix = "", duration = 2000, label }: { end: number; suffix?: string; prefix?: string; duration?: number; label: string }) {
   const [count, setCount] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -252,56 +200,29 @@ function StatsCounter({ end, suffix = "", prefix = "", duration = 2000, label }:
       const progress = Math.min((timestamp - startTime) / duration, 1);
       const easeOutQuart = 1 - Math.pow(1 - progress, 4);
       setCount(Math.floor(easeOutQuart * end));
-
-      if (progress < 1) {
-        animationFrame = requestAnimationFrame(animate);
-      }
+      if (progress < 1) animationFrame = requestAnimationFrame(animate);
     };
 
     animationFrame = requestAnimationFrame(animate);
-    return () => {
-      if (animationFrame) cancelAnimationFrame(animationFrame);
-    };
+    return () => { if (animationFrame) cancelAnimationFrame(animationFrame); };
   }, [isVisible, end, duration]);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) setIsVisible(true);
-      },
-      { threshold: 0.1 }
-    );
+    const observer = new IntersectionObserver(([entry]) => { if (entry.isIntersecting) setIsVisible(true); }, { threshold: 0.1 });
     const element = document.getElementById(`stats-${label}`);
     if (element) observer.observe(element);
     return () => observer.disconnect();
   }, [label]);
 
   return (
-    <div
-      id={`stats-${label}`}
-      className="text-center p-6 rounded-xl bg-lab-blue/20 border border-lab-accent/20 backdrop-blur-sm transition-all duration-300 hover:border-lab-accent/40 hover:shadow-lg hover:shadow-lab-accent/10"
-    >
-      <div className="text-4xl sm:text-5xl font-bold text-lab-ice mb-2">
-        {prefix}
-        {count}
-        {suffix}
-      </div>
+    <div id={`stats-${label}`} className="text-center p-6 rounded-xl bg-lab-blue/20 border border-lab-accent/20 backdrop-blur-sm transition-all duration-300 hover:border-lab-accent/40 hover:shadow-lg hover:shadow-lab-accent/10">
+      <div className="text-4xl sm:text-5xl font-bold text-lab-ice mb-2">{prefix}{count}{suffix}</div>
       <div className="text-sm text-lab-ice/60 font-medium">{label}</div>
     </div>
   );
 }
 
-// ============================================================================
-// COMPONENT: SkillBar (Animated Progress Bar)
-// ============================================================================
-
-interface SkillBarProps {
-  skill: string;
-  level: number;
-  delay?: number;
-}
-
-function SkillBar({ skill, level, delay = 0 }: SkillBarProps) {
+function SkillBar({ skill, level, delay = 0 }: { skill: string; level: number; delay?: number }) {
   const [width, setWidth] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -312,12 +233,7 @@ function SkillBar({ skill, level, delay = 0 }: SkillBarProps) {
   }, [isVisible, level, delay]);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) setIsVisible(true);
-      },
-      { threshold: 0.1 }
-    );
+    const observer = new IntersectionObserver(([entry]) => { if (entry.isIntersecting) setIsVisible(true); }, { threshold: 0.1 });
     const element = document.getElementById(`skill-${skill}`);
     if (element) observer.observe(element);
     return () => observer.disconnect();
@@ -330,35 +246,18 @@ function SkillBar({ skill, level, delay = 0 }: SkillBarProps) {
         <span className="text-sm text-lab-accent">{level}%</span>
       </div>
       <div className="h-2 bg-lab-navy rounded-full overflow-hidden border border-lab-accent/20">
-        <div
-          className="h-full bg-gradient-to-r from-lab-accent to-blue-400 rounded-full transition-all duration-1000 ease-out"
-          style={{ width: `${width}%` }}
-        />
+        <div className="h-full bg-gradient-to-r from-lab-accent to-blue-400 rounded-full transition-all duration-1000 ease-out" style={{ width: `${width}%` }} />
       </div>
     </div>
   );
 }
 
-// ============================================================================
-// COMPONENT: TimelineItem
-// ============================================================================
-
-interface TimelineItemProps {
-  milestone: Milestone;
-  index: number;
-  isLast: boolean;
-}
-
-function TimelineItem({ milestone, index, isLast }: TimelineItemProps) {
+function TimelineItem({ milestone, index, isLast }: { milestone: Milestone; index: number; isLast: boolean }) {
   return (
     <div className="relative pl-8 sm:pl-32 py-6 group">
-      {!isLast && (
-        <div className="absolute left-0 sm:left-40 top-0 bottom-0 w-px bg-gradient-to-b from-lab-accent/50 to-transparent" />
-      )}
+      {!isLast && <div className="absolute left-0 sm:left-40 top-0 bottom-0 w-px bg-gradient-to-b from-lab-accent/50 to-transparent" />}
       <div className="absolute left-0 sm:left-0 top-8 w-24 sm:w-32">
-        <span className="inline-block px-3 py-1 rounded-full bg-lab-accent/20 border border-lab-accent/40 text-lab-accent text-sm font-mono font-bold">
-          {milestone.year}
-        </span>
+        <span className="inline-block px-3 py-1 rounded-full bg-lab-accent/20 border border-lab-accent/40 text-lab-accent text-sm font-mono font-bold">{milestone.year}</span>
       </div>
       <div className="absolute left-0 sm:left-40 top-6 -translate-x-1/2">
         <div className="size-10 rounded-full bg-lab-navy border-2 border-lab-accent flex items-center justify-center shadow-lg shadow-lab-accent/20 group-hover:scale-110 transition-transform duration-300">
@@ -373,32 +272,16 @@ function TimelineItem({ milestone, index, isLast }: TimelineItemProps) {
   );
 }
 
-// ============================================================================
-// COMPONENT: TestimonialCard
-// ============================================================================
-
-interface TestimonialCardProps {
-  testimonial: Testimonial;
-  index: number;
-}
-
-function TestimonialCard({ testimonial, index }: TestimonialCardProps) {
+function TestimonialCard({ testimonial, index }: { testimonial: Testimonial; index: number }) {
   return (
-    <div
-      className="p-8 rounded-2xl bg-lab-blue/20 border border-lab-accent/20 backdrop-blur-sm hover:border-lab-accent/40 transition-all duration-300 hover:shadow-xl hover:shadow-lab-accent/10 group"
-      style={{ animationDelay: `${index * 150}ms` }}
-    >
+    <div className="p-8 rounded-2xl bg-lab-blue/20 border border-lab-accent/20 backdrop-blur-sm hover:border-lab-accent/40 transition-all duration-300 hover:shadow-xl hover:shadow-lab-accent/10 group" style={{ animationDelay: `${index * 150}ms` }}>
       <FontAwesomeIcon icon={faQuoteLeft} className="text-4xl text-lab-accent/20 mb-4 group-hover:text-lab-accent/40 transition-colors duration-300" />
       <div className="flex gap-1 mb-4">
-        {[...Array(testimonial.rating)].map((_, i) => (
-          <FontAwesomeIcon key={i} icon={faStar} className="text-yellow-400 text-sm" />
-        ))}
+        {[...Array(testimonial.rating)].map((_, i) => <FontAwesomeIcon key={i} icon={faStar} className="text-yellow-400 text-sm" />)}
       </div>
       <p className="text-lab-ice/80 leading-relaxed mb-6 italic">"{testimonial.quote}"</p>
       <div className="flex items-center gap-4">
-        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-lab-accent to-blue-500 flex items-center justify-center text-lab-navy font-bold">
-          {testimonial.author.charAt(0)}
-        </div>
+        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-lab-accent to-blue-500 flex items-center justify-center text-lab-navy font-bold">{testimonial.author.charAt(0)}</div>
         <div>
           <div className="font-semibold text-lab-ice">{testimonial.author}</div>
           <div className="text-sm text-lab-ice/50">{testimonial.role} at {testimonial.company}</div>
@@ -408,21 +291,9 @@ function TestimonialCard({ testimonial, index }: TestimonialCardProps) {
   );
 }
 
-// ============================================================================
-// COMPONENT: ProductCategoryCard
-// ============================================================================
-
-interface ProductCategoryCardProps {
-  category: ProductCategory;
-  index: number;
-}
-
-function ProductCategoryCard({ category, index }: ProductCategoryCardProps) {
+function ProductCategoryCard({ category, index }: { category: ProductCategory; index: number }) {
   return (
-    <div
-      className="relative p-8 rounded-2xl bg-lab-blue/20 border border-lab-accent/20 backdrop-blur-sm overflow-hidden group hover:border-lab-accent/40 transition-all duration-500"
-      style={{ animationDelay: `${index * 100}ms` }}
-    >
+    <div className="relative p-8 rounded-2xl bg-lab-blue/20 border border-lab-accent/20 backdrop-blur-sm overflow-hidden group hover:border-lab-accent/40 transition-all duration-500" style={{ animationDelay: `${index * 100}ms` }}>
       <div className={`absolute inset-0 bg-gradient-to-br ${category.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
       <div className={`w-16 h-16 rounded-xl bg-gradient-to-br ${category.color} flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
         <FontAwesomeIcon icon={category.icon} className="text-2xl text-white" />
@@ -444,10 +315,6 @@ function ProductCategoryCard({ category, index }: ProductCategoryCardProps) {
     </div>
   );
 }
-
-// ============================================================================
-// COMPONENT: FounderCard
-// ============================================================================
 
 function FounderCard() {
   const skills = [
@@ -471,32 +338,20 @@ function FounderCard() {
           </div>
           <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-lab-navy to-transparent">
             <div className="flex gap-6 text-center">
-              <div>
-                <div className="text-2xl font-bold text-lab-ice">5+</div>
-                <div className="text-xs text-lab-ice/60">Years Exp.</div>
-              </div>
+              <div><div className="text-2xl font-bold text-lab-ice">5+</div><div className="text-xs text-lab-ice/60">Years Exp.</div></div>
               <div className="w-px bg-lab-accent/30" />
-              <div>
-                <div className="text-2xl font-bold text-lab-ice">50+</div>
-                <div className="text-xs text-lab-ice/60">Projects</div>
-              </div>
+              <div><div className="text-2xl font-bold text-lab-ice">50+</div><div className="text-xs text-lab-ice/60">Projects</div></div>
               <div className="w-px bg-lab-accent/30" />
-              <div>
-                <div className="text-2xl font-bold text-lab-ice">100%</div>
-                <div className="text-xs text-lab-ice/60">Commitment</div>
-              </div>
+              <div><div className="text-2xl font-bold text-lab-ice">100%</div><div className="text-xs text-lab-ice/60">Commitment</div></div>
             </div>
           </div>
         </div>
-        <div className="absolute -top-4 -right-4 z-20 px-4 py-2 rounded-lg bg-lab-accent text-lab-navy font-bold shadow-lg shadow-lab-accent/30 animate-pulse">
-          Founder
-        </div>
+        <div className="absolute -top-4 -right-4 z-20 px-4 py-2 rounded-lg bg-lab-accent text-lab-navy font-bold shadow-lg shadow-lab-accent/30 animate-pulse">Founder</div>
       </div>
 
       <div>
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-lab-blue/40 border border-lab-accent/30 text-lab-accent text-sm font-mono mb-6">
-          <FontAwesomeIcon icon={faStar} className="text-xs" />
-          Meet the Founder
+          <FontAwesomeIcon icon={faStar} className="text-xs" /> Meet the Founder
         </div>
         <h2 className="text-4xl sm:text-5xl font-bold text-lab-ice mb-4">{FOUNDER.name}</h2>
         <p className="text-xl text-lab-accent mb-6 font-medium">{FOUNDER.role}</p>
@@ -504,29 +359,16 @@ function FounderCard() {
 
         <div className="mb-8">
           <h3 className="text-lg font-bold text-lab-ice mb-6 flex items-center gap-2">
-            <FontAwesomeIcon icon={faCode} className="text-lab-accent" />
-            Core Expertise
+            <FontAwesomeIcon icon={faCode} className="text-lab-accent" /> Core Expertise
           </h3>
-          {skills.map((skill, index) => (
-            <SkillBar key={skill.name} skill={skill.name} level={skill.level} delay={index * 100} />
-          ))}
+          {skills.map((skill, index) => <SkillBar key={skill.name} skill={skill.name} level={skill.level} delay={index * 100} />)}
         </div>
 
         <div className="flex gap-4">
           {Object.entries(FOUNDER.socials).map(([platform, url]) =>
             url && url !== "#" ? (
-              <a
-                key={platform}
-                href={url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-12 h-12 rounded-lg border border-lab-accent/30 bg-lab-blue/30 flex items-center justify-center text-lab-ice/70 hover:text-lab-accent hover:border-lab-accent hover:bg-lab-accent/10 transition-all duration-300 hover:shadow-lg hover:shadow-lab-accent/20"
-                aria-label={platform}
-              >
-                <FontAwesomeIcon
-                  icon={platform === "github" ? faGithub : platform === "linkedin" ? faLinkedin : faTwitter}
-                  className="text-lg"
-                />
+              <a key={platform} href={url} target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-lg border border-lab-accent/30 bg-lab-blue/30 flex items-center justify-center text-lab-ice/70 hover:text-lab-accent hover:border-lab-accent hover:bg-lab-accent/10 transition-all duration-300 hover:shadow-lg hover:shadow-lab-accent/20" aria-label={platform}>
+                <FontAwesomeIcon icon={platform === "github" ? faGithub : platform === "linkedin" ? faLinkedin : faTwitter} className="text-lg" />
               </a>
             ) : null
           )}
@@ -537,10 +379,10 @@ function FounderCard() {
 }
 
 // ============================================================================
-// MAIN COMPONENT: About
+// MAIN PAGE COMPONENT (DEFAULT EXPORT REQUIRED FOR Next.js App Router)
 // ============================================================================
 
-export function About() {
+export default function AboutPage() {
   const [activeTab, setActiveTab] = useState<"mission" | "vision" | "values">("mission");
 
   return (
@@ -590,9 +432,7 @@ export function About() {
               <div className="grid md:grid-cols-2 gap-8">
                 <div>
                   <h3 className="text-2xl font-bold text-lab-ice mb-4">Our Mission</h3>
-                  <p className="text-lab-ice/70 leading-relaxed mb-6">
-                    To democratize access to production-grade software by providing developers and businesses with premium tools, templates, and expertise that accelerate development and eliminate technical debt.
-                  </p>
+                  <p className="text-lab-ice/70 leading-relaxed mb-6">To democratize access to production-grade software by providing developers and businesses with premium tools, templates, and expertise that accelerate development and eliminate technical debt.</p>
                   <ul className="space-y-3">
                     {["Ship 10x faster with our proven boilerplates", "Learn from production-ready code examples", "Build with confidence using tested patterns"].map((item, i) => (
                       <li key={i} className="flex items-start gap-3">
@@ -612,9 +452,7 @@ export function About() {
               <div className="grid md:grid-cols-2 gap-8">
                 <div>
                   <h3 className="text-2xl font-bold text-lab-ice mb-4">Our Vision</h3>
-                  <p className="text-lab-ice/70 leading-relaxed mb-6">
-                    A world where every developer has access to the tools and knowledge needed to build exceptional software, and where technical excellence is the standard, not the exception.
-                  </p>
+                  <p className="text-lab-ice/70 leading-relaxed mb-6">A world where every developer has access to the tools and knowledge needed to build exceptional software, and where technical excellence is the standard, not the exception.</p>
                   <ul className="space-y-3">
                     {["Empower 1 million developers by 2030", "Set new standards for code quality", "Bridge the gap between learning and shipping"].map((item, i) => (
                       <li key={i} className="flex items-start gap-3">
@@ -633,14 +471,9 @@ export function About() {
             {activeTab === "values" && (
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {PRINCIPLES.map((principle, index) => {
-                  // FIX: Render Lucide icon from lib/content as a React component, not FontAwesome
                   const IconComponent = principle.icon;
                   return (
-                    <div
-                      key={principle.name}
-                      className="p-6 rounded-xl bg-lab-navy/50 border border-lab-accent/20 hover:border-lab-accent/40 transition-all duration-300 group"
-                      style={{ animationDelay: `${index * 50}ms` }}
-                    >
+                    <div key={principle.name} className="p-6 rounded-xl bg-lab-navy/50 border border-lab-accent/20 hover:border-lab-accent/40 transition-all duration-300 group" style={{ animationDelay: `${index * 50}ms` }}>
                       <IconComponent className="w-8 h-8 text-lab-accent mb-4 group-hover:scale-110 transition-transform duration-300" />
                       <h4 className="font-bold text-lab-ice mb-2">{principle.name}</h4>
                       <p className="text-sm text-lab-ice/60 leading-relaxed">{principle.text}</p>
@@ -667,20 +500,12 @@ export function About() {
           <SectionHeading path="stats" lines={["By the", "Numbers"]} tone="dark" className="mb-12" />
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
             {STATS.map((stat) => (
-              <StatsCounter
-                key={stat.label}
-                end={parseInt(stat.value) || 0}
-                suffix={stat.value.includes("+") ? "+" : ""}
-                label={stat.label}
-              />
+              <StatsCounter key={stat.label} end={parseInt(stat.value) || 0} suffix={stat.value.includes("+") ? "+" : ""} label={stat.label} />
             ))}
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
             {ACHIEVEMENTS.map((achievement, index) => (
-              <div
-                key={index}
-                className="text-center p-6 rounded-xl bg-lab-blue/20 border border-lab-accent/20 backdrop-blur-sm hover:border-lab-accent/40 transition-all duration-300"
-              >
+              <div key={index} className="text-center p-6 rounded-xl bg-lab-blue/20 border border-lab-accent/20 backdrop-blur-sm hover:border-lab-accent/40 transition-all duration-300">
                 <FontAwesomeIcon icon={achievement.icon} className="text-4xl text-lab-accent mb-4" />
                 <div className="text-3xl font-bold text-lab-ice mb-1">{achievement.value}</div>
                 <div className="text-sm font-medium text-lab-ice/80 mb-1">{achievement.label}</div>
@@ -705,11 +530,7 @@ export function About() {
           <SectionHeading path="stack" lines={["Tech", "Stack"]} tone="dark" className="mb-12" />
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
             {["Nx", "Re", "Ts", "Nd", "Cf", "Sb", "Pg", "Py", "Tw", "Gh", "Ai", "Dk"].map((tech, index) => (
-              <div
-                key={tech}
-                className="group p-6 rounded-xl bg-lab-blue/20 border border-lab-accent/20 text-center hover:border-lab-accent/40 hover:bg-lab-accent/10 transition-all duration-300 hover:-translate-y-1"
-                style={{ animationDelay: `${index * 50}ms` }}
-              >
+              <div key={tech} className="group p-6 rounded-xl bg-lab-blue/20 border border-lab-accent/20 text-center hover:border-lab-accent/40 hover:bg-lab-accent/10 transition-all duration-300 hover:-translate-y-1" style={{ animationDelay: `${index * 50}ms` }}>
                 <div className="text-2xl font-bold text-lab-accent mb-1 group-hover:scale-110 transition-transform duration-300">{tech}</div>
                 <div className="text-sm font-medium text-lab-ice mb-1">Technology</div>
                 <div className="text-xs text-lab-ice/50">Stack</div>
@@ -733,17 +554,10 @@ export function About() {
           <SectionHeading path="process" lines={["How We", "Work"]} tone="dark" className="mb-12" />
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {STEPS.map((step, index) => {
-              // FIX: Render Lucide icon from lib/content as a React component, not FontAwesome
               const IconComponent = step.icon;
               return (
-                <div
-                  key={step.n}
-                  className="relative p-6 rounded-xl bg-lab-blue/20 border border-lab-accent/20 backdrop-blur-sm hover:border-lab-accent/40 transition-all duration-300 group"
-                  style={{ animationDelay: `${index * 100}ms` }}
-                >
-                  <div className="text-4xl font-bold text-lab-accent/20 absolute top-4 right-4 group-hover:text-lab-accent/40 transition-colors duration-300">
-                    {step.n}
-                  </div>
+                <div key={step.n} className="relative p-6 rounded-xl bg-lab-blue/20 border border-lab-accent/20 backdrop-blur-sm hover:border-lab-accent/40 transition-all duration-300 group" style={{ animationDelay: `${index * 100}ms` }}>
+                  <div className="text-4xl font-bold text-lab-accent/20 absolute top-4 right-4 group-hover:text-lab-accent/40 transition-colors duration-300">{step.n}</div>
                   <div className="mb-4">
                     <IconComponent className="w-8 h-8 text-lab-accent" />
                   </div>
@@ -770,19 +584,11 @@ export function About() {
               Let's collaborate to bring your vision to life with production-grade code, modern architecture, and relentless attention to detail.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a
-                href="#contact"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-lg bg-lab-accent text-lab-navy font-bold hover:bg-lab-ice transition-all duration-300 hover:shadow-xl hover:shadow-lab-accent/30 hover:scale-105"
-              >
-                <FontAwesomeIcon icon={faEnvelope} />
-                Get in Touch
+              <a href="#contact" className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-lg bg-lab-accent text-lab-navy font-bold hover:bg-lab-ice transition-all duration-300 hover:shadow-xl hover:shadow-lab-accent/30 hover:scale-105">
+                <FontAwesomeIcon icon={faEnvelope} /> Get in Touch
               </a>
-              <a
-                href="#products"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-lg border border-lab-accent/40 bg-lab-blue/30 text-lab-ice font-semibold hover:border-lab-accent hover:bg-lab-blue/50 transition-all duration-300"
-              >
-                <FontAwesomeIcon icon={faCode} />
-                View Products
+              <a href="#products" className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-lg border border-lab-accent/40 bg-lab-blue/30 text-lab-ice font-semibold hover:border-lab-accent hover:bg-lab-blue/50 transition-all duration-300">
+                <FontAwesomeIcon icon={faCode} /> View Products
               </a>
             </div>
           </div>
