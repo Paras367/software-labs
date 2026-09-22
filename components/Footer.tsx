@@ -1,6 +1,13 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUp, faArrowRight } from "@fortawesome/free-solid-svg-icons";
-import { faGithub } from "@fortawesome/free-brands-svg-icons"; // <-- GitHub goes here!
+import { 
+  faGithub, 
+  faInstagram, 
+  faPinterest, 
+  faTwitter, 
+  faLinkedin, 
+  faDribbble 
+} from "@fortawesome/free-brands-svg-icons";
 import { Logo } from "@/components/Logo";
 import { Container } from "@/components/ui";
 import { FOOTER_COLUMNS, SITE } from "@/lib/site";
@@ -24,8 +31,8 @@ export function Footer() {
               into elegant, scalable digital solutions.
             </p>
             
-            {/* Minimal Social Proof */}
-            <div className="mt-8 flex items-center gap-3">
+            {/* Social Media Icons */}
+            <div className="mt-8 flex flex-wrap items-center gap-3">
               <a
                 href={SITE.github}
                 target="_blank"
@@ -35,6 +42,71 @@ export function Footer() {
               >
                 <FontAwesomeIcon 
                   icon={faGithub} 
+                  className="size-4 transition-transform duration-300 group-hover:scale-110"
+                />
+              </a>
+              
+              <a
+                href="https://twitter.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Twitter"
+                className="group flex size-9 items-center justify-center rounded-md border border-lab-accent/20 bg-lab-blue/20 text-lab-ice/60 transition-all duration-300 hover:border-lab-accent hover:bg-lab-accent/10 hover:text-lab-accent hover:shadow-[0_0_15px_-3px_rgba(99,102,241,0.4)]"
+              >
+                <FontAwesomeIcon 
+                  icon={faTwitter} 
+                  className="size-4 transition-transform duration-300 group-hover:scale-110"
+                />
+              </a>
+              
+              <a
+                href="https://linkedin.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn"
+                className="group flex size-9 items-center justify-center rounded-md border border-lab-accent/20 bg-lab-blue/20 text-lab-ice/60 transition-all duration-300 hover:border-lab-accent hover:bg-lab-accent/10 hover:text-lab-accent hover:shadow-[0_0_15px_-3px_rgba(99,102,241,0.4)]"
+              >
+                <FontAwesomeIcon 
+                  icon={faLinkedin} 
+                  className="size-4 transition-transform duration-300 group-hover:scale-110"
+                />
+              </a>
+              
+              <a
+                href="https://instagram.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+                className="group flex size-9 items-center justify-center rounded-md border border-lab-accent/20 bg-lab-blue/20 text-lab-ice/60 transition-all duration-300 hover:border-lab-accent hover:bg-lab-accent/10 hover:text-lab-accent hover:shadow-[0_0_15px_-3px_rgba(99,102,241,0.4)]"
+              >
+                <FontAwesomeIcon 
+                  icon={faInstagram} 
+                  className="size-4 transition-transform duration-300 group-hover:scale-110"
+                />
+              </a>
+              
+              <a
+                href="https://pinterest.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Pinterest"
+                className="group flex size-9 items-center justify-center rounded-md border border-lab-accent/20 bg-lab-blue/20 text-lab-ice/60 transition-all duration-300 hover:border-lab-accent hover:bg-lab-accent/10 hover:text-lab-accent hover:shadow-[0_0_15px_-3px_rgba(99,102,241,0.4)]"
+              >
+                <FontAwesomeIcon 
+                  icon={faPinterest} 
+                  className="size-4 transition-transform duration-300 group-hover:scale-110"
+                />
+              </a>
+              
+              <a
+                href="https://dribbble.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Dribbble"
+                className="group flex size-9 items-center justify-center rounded-md border border-lab-accent/20 bg-lab-blue/20 text-lab-ice/60 transition-all duration-300 hover:border-lab-accent hover:bg-lab-accent/10 hover:text-lab-accent hover:shadow-[0_0_15px_-3px_rgba(99,102,241,0.4)]"
+              >
+                <FontAwesomeIcon 
+                  icon={faDribbble} 
                   className="size-4 transition-transform duration-300 group-hover:scale-110"
                 />
               </a>
