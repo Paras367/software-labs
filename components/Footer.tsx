@@ -4,10 +4,6 @@ import { Container } from "@/components/ui";
 import { FOOTER_COLUMNS, SITE } from "@/lib/site";
 
 export function Footer() {
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
   return (
     <footer className="relative bg-lab-navy pt-20 pb-12 overflow-hidden">
       {/* Cinematic Top Border & Ambient Glow */}
@@ -35,16 +31,22 @@ export function Footer() {
                 aria-label="GitHub"
                 className="group flex size-9 items-center justify-center rounded-md border border-lab-accent/20 bg-lab-blue/20 text-lab-ice/60 transition-all duration-300 hover:border-lab-accent hover:bg-lab-accent/10 hover:text-lab-accent hover:shadow-[0_0_15px_-3px_rgba(99,102,241,0.4)]"
               >
-                <svg
-                  aria-hidden="true"
-                  viewBox="0 0 24 24"
-                  className="size-4 transition-transform duration-300 group-hover:scale-110"
-                  fill="currentColor"
+                <svg 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  width="16" 
+                  height="16" 
+                  viewBox="0 0 24 24" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  strokeWidth="2" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round"
+                  className="transition-transform duration-300 group-hover:scale-110"
                 >
-                  <path d="M12 .6a11.4 11.4 0 0 0-3.6 22.2c.57.1.78-.25.78-.55v-2.14c-3.18.69-3.85-1.35-3.85-1.35-.52-1.32-1.27-1.67-1.27-1.67-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.75 2.67 1.25 3.32.96.1-.74.4-1.25.72-1.54-2.54-.29-5.2-1.27-5.2-5.66 0-1.25.45-2.27 1.18-3.07-.12-.29-.51-1.45.11-3.02 0 0 .96-.31 3.14 1.17a10.9 10.9 0 0 1 5.72 0c2.18-1.48 3.14-1.17 3.14-1.17.62 1.57.23 2.73.11 3.02.73.8 1.18 1.82 1.18 3.07 0 4.4-2.67 5.36-5.21 5.65.41.36.77 1.06.77 2.14v3.17c0 .3.2.66.78.55A11.4 11.4 0 0 0 12 .6Z" />
+                  <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+                  <path d="M9 18c-4.51 2-5-2-7-2" />
                 </svg>
               </a>
-              {/* Add more social icons here if available in SITE (e.g., Twitter, LinkedIn) */}
             </div>
           </div>
 
@@ -98,14 +100,13 @@ export function Footer() {
               {SITE.authorName} <span className="text-lab-ice/30">({SITE.authorHandle})</span>
             </a>
             
-            <button
-              onClick={scrollToTop}
-              aria-label="Back to top"
+            <a
+              href="#home"
               className="group/btn inline-flex items-center gap-1.5 rounded-md border border-lab-accent/20 bg-lab-blue/20 px-3 py-1.5 text-lab-ice/60 transition-all duration-300 hover:border-lab-accent/50 hover:bg-lab-accent/10 hover:text-lab-ice"
             >
               <span>Back to top</span>
               <ArrowUp className="size-3 transition-transform duration-300 group-hover/btn:-translate-y-0.5" />
-            </button>
+            </a>
           </div>
         </div>
       </Container>
