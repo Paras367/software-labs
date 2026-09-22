@@ -54,7 +54,7 @@ export const NAV_LINKS = [
   { label: "Products", href: "#products", description: "Explore our premium source code & tools" },
   { label: "Solutions", href: "#solutions", description: "Custom software engineering services" },
   { label: "Developers", href: "#developers", description: "APIs, docs, and open-source resources" },
-  { label: "About", href: "#about", description: "Our mission, culture, and engineering principles" },
+  { label: "About", href: "/about", description: "Our mission, culture, and engineering principles" },
 ] as const;
 
 /* -------------------------------------------------------------------------- */
@@ -77,19 +77,19 @@ export const FOOTER_COLUMNS: ReadonlyArray<FooterColumn> = [
   {
     title: "Products",
     links: [
-      { label: "Source Code", href: "#products" },
-      { label: "SaaS Templates", href: "#products" },
-      { label: "Developer Tools", href: "#products" },
-      { label: "AI Integrations", href: "#products" },
+      { label: "Source Code", href: "/products" },
+      { label: "SaaS Templates", href: "/products" },
+      { label: "Developer Tools", href: "/products" },
+      { label: "AI Integrations", href: "/products" },
     ],
   },
   {
     title: "Company",
     links: [
-      { label: "About Us", href: "#about" },
-      { label: "Engineering Process", href: "#process" },
-      { label: "Get in Touch", href: "#contact" },
-      { label: "Careers", href: "#careers" }, // Added for pro feel
+      { label: "About Us", href: "/about" },
+      { label: "Engineering Process", href: "/process" },
+      { label: "Get in Touch", href: "/contact" },
+      { label: "Careers", href: "/careers" }, // Added for pro feel
     ],
   },
   {
