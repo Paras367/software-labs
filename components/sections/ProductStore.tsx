@@ -1,104 +1,180 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { ArrowUpRight, GitFork } from "lucide-react";
-import { Container, SectionHeading } from "@/components/ui";
+import { useState, useMemo } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { 
+  faArrowRight, 
+  faStar, 
+  faDownload, 
+  faFilter,
+  faSort
+} from "@fortawesome/free-solid-svg-icons";
+import { Container, SectionHeading, ButtonLink } from "@/components/ui";
 import { ProductPreview } from "@/components/ProductPreview";
-import { CATEGORY_LABEL, FILTERS, PRODUCTS, type Category } from "@/lib/products";
-import { cx } from "@/lib/utils";
+import { 
+  PRODUCTS, 
+  FILTERS, 
+  SORT_OPTIONS, 
+  CATEGORY_LABEL,
+  TECH_COLORS,
+  type Product 
+} from "@/lib/products";
 
 export function ProductStore() {
-  const [active, setActive] = useState<"all" | Category>("all");
+  const [activeFilter, setActiveFilter] = useState<"all" | string>("all");
+  const [sortBy, setSortBy] = useState("popular");
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const visible = useMemo(
-    () => (active === "all" ? PRODUCTS : PRODUCTS.filter((p) => p.categories.includes(active))),
-    [active],
-  );
+  // Filter and Sort Logic
+  const filteredProducts = useMemo(() => {
+    let result = PRODUCTS;
+
+    if (activeFilter !== "all") {
+      result = result.filter((p) => p.categories.includes(activeFilter as any));
+    }
+
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      result = result.filter(
+        (p) =>
+          p.name.toLowerCase().includes(q) ||
+          p.description.toLowerCase().includes(q) ||
+          p.techStack.some((t) => t.toLowerCase().includes(q))
+      );
+    }
+
+    return [...result].sort((a, b) => {
+      switch (sortBy) {
+        case "price-asc": return a.pricing.inr - b.pricing.inr;
+        case "price-desc": return b.pricing.inr - a.pricing.inr;
+        case "rating": return b.metrics.rating - a.metrics.rating;
+        case "newest": return new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime();
+        case "popular": 
+        default: return b.metrics.downloads - a.metrics.downloads;
+      }
+    });
+  }, [activeFilter, sortBy, searchQuery]);
 
   return (
-    <section id="products" className="relative bg-lab-blue/10 py-24 sm:py-32">
+    <section id="products" className="relative py-24 sm:py-32 bg-lab-navy">
       <Container>
-        <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
-          <SectionHeading path="products" lines={["Buy the code.", "Own the software."]}>
-            Production-ready source code, templates and developer products built by engineers.
-          </SectionHeading>
+        <SectionHeading path="products" lines={["Premium", "Source Code"]} tone="dark" className="mb-12" />
+        <p className="max-w-2xl text-lg text-lab-ice/70 mb-12">
+          Production-ready foundations. Skip the boilerplate and ship your next project in days, not months.
+        </p>
 
-          <div role="tablist" aria-label="Filter products by category" className="flex flex-wrap gap-2">
+        {/* Controls: Search, Filter, Sort */}
+        <div className="flex flex-col lg:flex-row gap-6 mb-12 items-start lg:items-center justify-between">
+          <div className="relative w-full lg:w-80">
+            <FontAwesomeIcon icon={faFilter} className="absolute left-3 top-1/2 -translate-y-1/2 text-lab-ice/40 size-4" />
+            <input
+              type="text"
+              placeholder="Search products, tech..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full rounded-lg border border-lab-accent/20 bg-lab-blue/20 py-2.5 pl-10 pr-4 text-sm text-lab-ice placeholder-lab-ice/40 focus:border-lab-accent/50 focus:bg-lab-blue/30 focus:outline-none focus:ring-1 focus:ring-lab-accent/50 transition-all"
+            />
+          </div>
+
+          <div className="flex flex-wrap gap-2">
             {FILTERS.map((f) => (
               <button
                 key={f.id}
-                role="tab"
-                type="button"
-                aria-selected={active === f.id}
-                onClick={() => setActive(f.id)}
-                className={cx(
-                  "rounded-full border px-4 py-1.5 font-mono text-xs transition-colors duration-200",
-                  active === f.id
-                    ? "border-lab-accent bg-lab-accent text-lab-navy font-semibold"
-                    : "border-lab-accent/30 text-lab-ice/60 hover:border-lab-accent/60 hover:text-lab-ice",
-                )}
+                onClick={() => setActiveFilter(f.id)}
+                className={`px-4 py-2 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all duration-300 ${
+                  activeFilter === f.id
+                    ? "bg-lab-accent text-lab-navy shadow-lg shadow-lab-accent/20"
+                    : "bg-lab-blue/20 text-lab-ice/60 border border-lab-accent/20 hover:border-lab-accent/40 hover:text-lab-ice"
+                }`}
               >
                 {f.label}
               </button>
             ))}
           </div>
-        </div>
 
-        <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {visible.map((p, i) => (
-            <article
-              key={p.id}
-              data-reveal
-              style={{ ["--d" as string]: `${(i % 3) * 80}ms` }}
-              className="group flex flex-col overflow-hidden rounded-xl border border-lab-accent/15 bg-lab-navy/60 transition-all duration-300 hover:-translate-y-1 hover:border-lab-accent/60 hover:shadow-glow"
+          <div className="relative">
+            <FontAwesomeIcon icon={faSort} className="absolute left-3 top-1/2 -translate-y-1/2 text-lab-ice/40 size-3" />
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="appearance-none rounded-lg border border-lab-accent/20 bg-lab-blue/20 py-2.5 pl-9 pr-8 text-xs font-medium text-lab-ice focus:border-lab-accent/50 focus:outline-none focus:ring-1 focus:ring-lab-accent/50 transition-all cursor-pointer"
             >
-              <div className="relative aspect-[16/9] overflow-hidden border-b border-lab-accent/15">
-                <ProductPreview kind={p.preview} />
-                <span className="absolute left-3 top-3 rounded bg-lab-navy/80 px-2 py-0.5 font-mono text-[10px] text-lab-accent backdrop-blur-sm">
-                  {p.categories.map((c) => CATEGORY_LABEL[c]).join(" · ")}
-                </span>
-              </div>
-
-              <div className="flex flex-1 flex-col p-6">
-                <div className="flex items-start justify-between gap-3">
-                  <span className="font-mono text-xs text-lab-ice/35">{p.index}</span>
-                  <span className="font-mono text-[11px] text-lab-ice/35">v{p.version}</span>
-                </div>
-                <h3 className="mt-2 text-lg font-bold text-lab-ice">{p.name}</h3>
-                <p className="mt-1.5 text-sm leading-relaxed text-lab-ice/55">{p.description}</p>
-
-                <ul className="mt-4 flex flex-wrap gap-1.5" aria-label="Technologies used">
-                  {p.tech.map((t) => (
-                    <li
-                      key={t}
-                      className="rounded border border-lab-accent/20 px-2 py-0.5 font-mono text-[10px] text-lab-ice/50"
-                    >
-                      {t}
-                    </li>
-                  ))}
-                </ul>
-
-                <div className="mt-6 flex items-end justify-between gap-3 border-t border-lab-accent/10 pt-4">
-                  <div>
-                    <p className="font-mono text-lg font-bold text-lab-accent">
-                      ₹{p.price.inr} <span className="text-xs font-normal text-lab-ice/35">/ ${p.price.usd}</span>
-                    </p>
-                  </div>
-                  <a
-                    href={`#${p.id}`}
-                    className="inline-flex items-center gap-1 text-xs font-semibold text-lab-ice/70 transition-colors group-hover:text-lab-accent"
-                  >
-                    View Details <ArrowUpRight className="size-3.5" aria-hidden />
-                  </a>
-                </div>
-              </div>
-            </article>
-          ))}
+              {SORT_OPTIONS.map((opt) => (
+                <option key={opt.id} value={opt.id} className="bg-lab-navy">
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
-        <p className="mt-10 flex items-center justify-center gap-1.5 font-mono text-xs text-lab-ice/35">
-          <GitFork className="size-3.5" aria-hidden /> full documentation ships with every purchase
-        </p>
+        {/* Product Grid */}
+        {filteredProducts.length > 0 ? (
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {filteredProducts.map((p: Product) => (
+              <article 
+                key={p.id} 
+                className="group relative flex flex-col rounded-xl border border-lab-accent/15 bg-lab-blue/10 backdrop-blur-sm transition-all duration-300 hover:border-lab-accent/30 hover:bg-lab-blue/20 hover:shadow-xl hover:shadow-lab-accent/5 hover:-translate-y-1"
+              >
+                {/* ✅ THIS IS THE CORRECT USAGE ✅ */}
+                <ProductPreview product={p} />
+
+                <div className="flex flex-col flex-1 p-6">
+                  <div className="flex items-start justify-between mb-3">
+                    <span className="font-mono text-[10px] uppercase tracking-wider text-lab-accent/80">
+                      {p.categories.map((c) => CATEGORY_LABEL[c]).join(" · ")}
+                    </span>
+                    <div className="text-right">
+                      {p.pricing.originalInr ? (
+                        <div className="flex flex-col items-end">
+                          <span className="text-xs text-lab-ice/40 line-through">₹{p.pricing.originalInr.toLocaleString('en-IN')}</span>
+                          <span className="text-lg font-bold text-lab-ice">₹{p.pricing.inr.toLocaleString('en-IN')}</span>
+                        </div>
+                      ) : (
+                        <span className="text-lg font-bold text-lab-ice">₹{p.pricing.inr.toLocaleString('en-IN')}</span>
+                      )}
+                    </div>
+                  </div>
+
+                  <h3 className="text-xl font-bold text-lab-ice mb-1 group-hover:text-lab-accent transition-colors">{p.name}</h3>
+                  <p className="text-sm text-lab-ice/60 mb-4 line-clamp-2">{p.tagline}</p>
+
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    {p.techStack.slice(0, 4).map((tech) => (
+                      <span key={tech} className={`flex items-center gap-1.5 rounded-md bg-lab-navy/60 px-2 py-1 text-[11px] font-medium border border-white/5 ${TECH_COLORS[tech] || "text-lab-ice/70"}`}>
+                        {tech}
+                      </span>
+                    ))}
+                    {p.techStack.length > 4 && (
+                      <span className="rounded-md bg-lab-navy/60 px-2 py-1 text-[11px] font-medium text-lab-ice/50 border border-white/5">
+                        +{p.techStack.length - 4}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="mt-auto pt-4 border-t border-lab-accent/10 flex items-center justify-between text-xs text-lab-ice/50">
+                    <div className="flex items-center gap-3">
+                      <span className="flex items-center gap-1"><FontAwesomeIcon icon={faStar} className="text-yellow-400 size-3" /> {p.metrics.rating}</span>
+                      <span className="flex items-center gap-1"><FontAwesomeIcon icon={faDownload} className="size-3" /> {p.metrics.downloads.toLocaleString()}</span>
+                    </div>
+                    <span className="font-mono text-[10px]">v{p.version}</span>
+                  </div>
+
+                  <ButtonLink href={`/products/${p.slug}`} className="mt-6 w-full justify-center">
+                    View Details <FontAwesomeIcon icon={faArrowRight} className="size-3" />
+                  </ButtonLink>
+                </div>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <div className="py-20 text-center border border-dashed border-lab-accent/20 rounded-xl bg-lab-blue/5">
+            <p className="text-lab-ice/50 text-lg mb-2">No products found matching your criteria.</p>
+            <button onClick={() => { setActiveFilter("all"); setSearchQuery(""); }} className="text-lab-accent hover:underline text-sm font-medium">
+              Clear all filters
+            </button>
+          </div>
+        )}
       </Container>
     </section>
   );
