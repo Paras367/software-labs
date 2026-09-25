@@ -1,91 +1,173 @@
-import type { PreviewKind } from "@/lib/products";
+import Image from "next/image";
+import type { Product, PreviewKind } from "@/lib/products";
+
+interface ProductPreviewProps {
+  product: Product;
+  className?: string;
+}
 
 /**
- * Abstract, brand-coloured "screenshot" for each product — built from
- * shapes, not a stock photo, so every card stays on-palette and feels
- * like a real interface sketch rather than template chrome.
+ * Premium Product Preview Component
+ * Renders a high-quality image preview with floating status badges,
+ * smooth hover interactions, and a branded abstract SVG fallback.
  */
-export function ProductPreview({ kind }: { kind: PreviewKind }) {
+export function ProductPreview({ product, className = "" }: ProductPreviewProps) {
   return (
-    <svg viewBox="0 0 320 190" className="h-full w-full" aria-hidden preserveAspectRatio="xMidYMid slice">
-      <rect width="320" height="190" fill="#081b34" />
-      <rect width="320" height="190" fill="url(#dotgrid)" opacity="0.5" />
+    <div className={`relative aspect-[16/10] w-full overflow-hidden rounded-t-xl bg-lab-navy group ${className}`}>
+      
+      {/* 1. Floating Status Badges */}
+      {product.badges.length > 0 && (
+        <div className="absolute top-3 left-3 z-20 flex flex-wrap gap-2">
+          {product.badges.map((badge) => (
+            <span
+              key={badge}
+              className={`px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded-md shadow-sm backdrop-blur-md border ${
+                badge === "New"
+                  ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/30"
+                  : badge === "Featured"
+                  ? "bg-lab-accent/10 text-lab-accent border-lab-accent/30"
+                  : badge === "Trending"
+                  ? "bg-orange-500/10 text-orange-400 border-orange-500/30"
+                  : "bg-red-500/10 text-red-400 border-red-500/30" // Sale
+              }`}
+            >
+              {badge}
+            </span>
+          ))}
+        </div>
+      )}
+
+      {/* 2. Primary Image Preview */}
+      <div className="absolute inset-0 z-10">
+        <Image
+          src={product.image}
+          alt={`${product.name} preview`}
+          fill
+          className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          onError={(e) => {
+            // Graceful fallback to abstract SVG if image fails to load or is missing
+            const target = e.target as HTMLImageElement;
+            target.style.display = "none";
+            const parent = target.parentElement;
+            if (parent) {
+              parent.querySelector(".svg-fallback")?.classList.remove("hidden");
+            }
+          }}
+        />
+      </div>
+
+      {/* 3. Abstract SVG Fallback / Background Pattern */}
+      <div className="svg-fallback absolute inset-0 z-0 hidden">
+        <AbstractPreview kind={product.preview} />
+      </div>
+
+      {/* 4. Subtle Gradient Overlay (Bottom) for seamless blending */}
+      <div className="absolute inset-x-0 bottom-0 z-20 h-1/2 bg-gradient-to-t from-lab-navy via-lab-navy/40 to-transparent pointer-events-none" />
+      
+      {/* 5. Hover Glow Border Effect */}
+      <div className="absolute inset-0 z-30 rounded-t-xl border border-transparent transition-colors duration-500 group-hover:border-lab-accent/30 pointer-events-none" />
+    </div>
+  );
+}
+
+/**
+ * Abstract, brand-coloured "screenshot" fallback.
+ * Uses the lab color palette to feel like a real interface sketch.
+ */
+function AbstractPreview({ kind }: { kind: PreviewKind }) {
+  // Mapped to the lab theme: navy (#081b34), blue (#134074), accent (#6366f1), ice (#e2e8f0)
+  const accent = "#6366f1";
+  const navy = "#081b34";
+  const blue = "#134074";
+  const ice = "#e2e8f0";
+
+  return (
+    <svg viewBox="0 0 320 200" className="h-full w-full" aria-hidden preserveAspectRatio="xMidYMid slice">
+      <rect width="320" height="200" fill={navy} />
+      <rect width="320" height="200" fill="url(#dotgrid)" opacity="0.4" />
       <defs>
-        <pattern id="dotgrid" width="14" height="14" patternUnits="userSpaceOnUse">
-          <circle cx="1" cy="1" r="1" fill="#5B9BD5" opacity="0.35" />
+        <pattern id="dotgrid" width="16" height="16" patternUnits="userSpaceOnUse">
+          <circle cx="1" cy="1" r="1" fill={accent} opacity="0.3" />
         </pattern>
       </defs>
+      
       {kind === "saas" && (
         <g>
-          <rect x="18" y="18" width="72" height="154" rx="6" fill="#134074" />
-          {[42, 62, 82, 102].map((y) => (
-            <rect key={y} x="30" y={y} width="48" height="7" rx="2" fill="#5B9BD5" opacity="0.55" />
+          <rect x="16" y="16" width="72" height="168" rx="6" fill={blue} />
+          {[40, 64, 88, 112].map((y) => (
+            <rect key={y} x="28" y={y} width="48" height="6" rx="2" fill={accent} opacity="0.4" />
           ))}
-          <rect x="104" y="18" width="198" height="70" rx="6" fill="#134074" opacity="0.7" />
-          <polyline points="112,74 140,50 168,62 196,34 224,54 252,40 280,58" fill="none" stroke="#5B9BD5" strokeWidth="2.5" />
-          <rect x="104" y="96" width="94" height="76" rx="6" fill="#134074" opacity="0.7" />
-          <rect x="206" y="96" width="96" height="76" rx="6" fill="#134074" opacity="0.7" />
+          <rect x="104" y="16" width="200" height="72" rx="6" fill={blue} opacity="0.6" />
+          <polyline points="112,72 144,48 176,60 208,32 240,52 272,38 296,56" fill="none" stroke={accent} strokeWidth="2" />
+          <rect x="104" y="100" width="96" height="84" rx="6" fill={blue} opacity="0.6" />
+          <rect x="212" y="100" width="92" height="84" rx="6" fill={blue} opacity="0.6" />
         </g>
       )}
+      
       {kind === "ai" && (
         <g>
-          <circle cx="160" cy="95" r="46" fill="none" stroke="#5B9BD5" strokeWidth="1.4" opacity="0.6" />
-          <circle cx="160" cy="95" r="30" fill="none" stroke="#5B9BD5" strokeWidth="1.4" opacity="0.4" />
+          <circle cx="160" cy="90" r="48" fill="none" stroke={accent} strokeWidth="1.5" opacity="0.5" />
+          <circle cx="160" cy="90" r="32" fill="none" stroke={accent} strokeWidth="1.5" opacity="0.3" />
           {[0, 60, 120, 180, 240, 300].map((deg) => {
-            const r = 46;
+            const r = 48;
             const x = 160 + r * Math.cos((deg * Math.PI) / 180);
-            const y = 95 + r * Math.sin((deg * Math.PI) / 180);
-            return <circle key={deg} cx={x} cy={y} r="3.5" fill="#DCEAF7" />;
+            const y = 90 + r * Math.sin((deg * Math.PI) / 180);
+            return <circle key={deg} cx={x} cy={y} r="3" fill={ice} opacity="0.8" />;
           })}
-          <rect x="20" y="150" width="280" height="24" rx="5" fill="#134074" />
-          <rect x="30" y="158" width="140" height="8" rx="3" fill="#5B9BD5" opacity="0.6" />
+          <rect x="24" y="152" width="272" height="28" rx="6" fill={blue} />
+          <rect x="36" y="162" width="120" height="8" rx="3" fill={accent} opacity="0.6" />
         </g>
       )}
+      
       {kind === "portfolio" && (
         <g>
-          <circle cx="52" cy="60" r="20" fill="#134074" stroke="#5B9BD5" strokeWidth="1.5" />
-          <rect x="86" y="46" width="120" height="10" rx="3" fill="#DCEAF7" opacity="0.85" />
-          <rect x="86" y="64" width="80" height="7" rx="3" fill="#5B9BD5" opacity="0.5" />
+          <circle cx="56" cy="56" r="24" fill={blue} stroke={accent} strokeWidth="1.5" />
+          <rect x="96" y="44" width="120" height="10" rx="3" fill={ice} opacity="0.7" />
+          <rect x="96" y="64" width="80" height="8" rx="3" fill={accent} opacity="0.5" />
           {[0, 1, 2].map((i) => (
-            <rect key={i} x={20 + i * 100} y="104" width="86" height="66" rx="6" fill="#134074" opacity="0.7" />
+            <rect key={i} x={24 + i * 96} y="104" width="80" height="72" rx="6" fill={blue} opacity="0.6" />
           ))}
         </g>
       )}
+      
       {kind === "commerce" && (
         <g>
           {[0, 1, 2, 3].map((i) => (
             <g key={i}>
-              <rect x={20 + i * 74} y="20" width="62" height="62" rx="6" fill="#134074" />
-              <rect x={20 + i * 74} y="88" width="62" height="8" rx="3" fill="#DCEAF7" opacity="0.7" />
-              <rect x={20 + i * 74} y="100" width="34" height="8" rx="3" fill="#5B9BD5" opacity="0.7" />
+              <rect x={24 + i * 72} y="24" width="56" height="56" rx="6" fill={blue} />
+              <rect x={24 + i * 72} y="92" width="56" height="8" rx="3" fill={ice} opacity="0.6" />
+              <rect x={24 + i * 72} y="108" width="32" height="8" rx="3" fill={accent} opacity="0.6" />
             </g>
           ))}
-          <rect x="20" y="130" width="280" height="40" rx="6" fill="#134074" opacity="0.6" />
-          <rect x="34" y="146" width="120" height="8" rx="3" fill="#5B9BD5" />
+          <rect x="24" y="144" width="272" height="36" rx="6" fill={blue} opacity="0.5" />
+          <rect x="36" y="158" width="100" height="8" rx="3" fill={accent} />
         </g>
       )}
+      
       {kind === "admin" && (
         <g>
-          <rect x="18" y="18" width="60" height="154" rx="6" fill="#134074" />
-          <rect x="94" y="18" width="208" height="34" rx="6" fill="#134074" opacity="0.7" />
+          <rect x="16" y="16" width="64" height="168" rx="6" fill={blue} />
+          <rect x="96" y="16" width="208" height="36" rx="6" fill={blue} opacity="0.6" />
           {[0, 1, 2].map((i) => (
-            <rect key={i} x={94 + i * 72} y="62" width="62" height="46" rx="6" fill="#134074" opacity="0.7" />
+            <rect key={i} x={96 + i * 68} y="64" width="56" height="48" rx="6" fill={blue} opacity="0.6" />
           ))}
-          <rect x="94" y="118" width="208" height="52" rx="6" fill="#134074" opacity="0.5" />
+          <rect x="96" y="124" width="208" height="60" rx="6" fill={blue} opacity="0.4" />
           {[0, 1, 2, 3, 4].map((i) => (
-            <rect key={i} x={106 + i * 36} y={128 + (i % 2 === 0 ? 0 : 10)} width="20" height={30 - (i % 2 === 0 ? 0 : 10)} fill="#5B9BD5" opacity="0.6" />
+            <rect key={i} x={108 + i * 36} y={136 + (i % 2 === 0 ? 0 : 12)} width="20" height={36 - (i % 2 === 0 ? 0 : 12)} fill={accent} opacity="0.5" />
           ))}
         </g>
       )}
+      
       {kind === "tools" && (
-        <g fontFamily="monospace" fontSize="9" fill="#5B9BD5">
-          <rect x="18" y="18" width="284" height="154" rx="6" fill="#0B2545" stroke="#5B9BD5" strokeOpacity="0.3" />
-          <text x="30" y="40">import {`{ tool }`} from &quot;@labs/ai&quot;</text>
-          <text x="30" y="58" fill="#DCEAF7" opacity="0.8">const result = await tool.run({`{`}</text>
-          <text x="42" y="74">mode: &quot;production&quot;,</text>
-          <text x="42" y="90">stream: true,</text>
-          <text x="30" y="106" fill="#DCEAF7" opacity="0.8">{`});`}</text>
-          <text x="30" y="130" fill="#5B9BD5" opacity="0.7">{"// ✓ 3 tools connected"}</text>
+        <g fontFamily="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" fontSize="9" fill={accent}>
+          <rect x="16" y="16" width="288" height="168" rx="6" fill="#0B2545" stroke={accent} strokeOpacity="0.3" />
+          <text x="28" y="40">import {"{ tool }"} from "@labs/ai"</text>
+          <text x="28" y="60" fill={ice} opacity="0.8">const result = await tool.run({"{"}</text>
+          <text x="40" y="78">mode: "production",</text>
+          <text x="40" y="96">stream: true,</text>
+          <text x="28" y="114" fill={ice} opacity="0.8">{"}"});</text>
+          <text x="28" y="140" fill={accent} opacity="0.7">{"// ✓ 3 tools connected"}</text>
         </g>
       )}
     </svg>
