@@ -47,16 +47,27 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Mobile Menu Lock & Escape Key
+  // Mobile Menu Lock & Escape Key + Cmd+K Shortcut
   useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        console.log("Open search modal here"); // TODO: Wire to your search modal
+      }
+    };
+    
     const mq = window.matchMedia("(min-width: 1024px)");
     const onMq = () => mq.matches && setOpen(false);
     
     document.addEventListener("keydown", onKey);
     mq.addEventListener("change", onMq);
-    document.body.style.overflow = "hidden";
+    
+    if (open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
     
     return () => {
       document.removeEventListener("keydown", onKey);
@@ -69,19 +80,26 @@ export function Navbar() {
 
   return (
     <>
-      {/* 1. Global Scroll Progress Bar (Top Edge of Viewport) */}
+      {/* 1. Global Scroll Progress Bar with Trailing Glow */}
       <div className="fixed top-0 left-0 right-0 h-[2px] z-[60] bg-lab-navy/50">
         <div 
-          className="h-full bg-lab-accent shadow-[0_0_12px_2px_rgba(99,102,241,0.6)] transition-all duration-100 ease-linear"
-          style={{ width: `${scrollProgress * 100}%` }}
-        />
+          className="h-full bg-lab-accent relative"
+          style={{ 
+            width: `${scrollProgress * 100}%`,
+            transition: "width 0.1s linear",
+            boxShadow: "0 0 12px 2px rgba(99,102,241,0.6), 0 0 20px 4px rgba(99,102,241,0.3)"
+          }}
+        >
+          {/* Trailing comet glow */}
+          <div className="absolute right-0 top-1/2 -translate-y-1/2 w-20 h-full bg-gradient-to-l from-lab-accent/50 to-transparent blur-sm" />
+        </div>
       </div>
 
       {/* 2. Floating Detached Navbar Container */}
       <header className="fixed top-4 inset-x-0 z-50 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div
           className={cx(
-            "relative rounded-xl border transition-all duration-500",
+            "relative rounded-xl border transition-all duration-500 overflow-hidden",
             solid
               ? "border-lab-accent/20 bg-lab-navy/85 shadow-[0_8px_32px_-12px_rgba(0,0,0,0.6)] backdrop-blur-2xl"
               : "border-white/10 bg-lab-navy/40 backdrop-blur-xl"
@@ -89,7 +107,12 @@ export function Navbar() {
           style={{ transitionTimingFunction: SPRING_EASE }}
         >
           {/* Subtle Technical Grid Overlay */}
-          <div className="absolute inset-0 rounded-xl bg-[linear-gradient(to_right,#ffffff06_1px,transparent_1px),linear-gradient(to_bottom,#ffffff06_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none opacity-40" />
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff06_1px,transparent_1px),linear-gradient(to_bottom,#ffffff06_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none opacity-40" />
+          
+          {/* Premium Noise Texture Overlay */}
+          <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay" 
+               style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }} 
+          />
           
           {/* Dynamic Height Wrapper */}
           <nav 
@@ -112,16 +135,16 @@ export function Navbar() {
               </a>
               
               {/* Tiny "SYSTEMS ONLINE" Indicator (Desktop Only) */}
-              <div className="hidden items-center gap-2 px-2.5 py-1 rounded-full border border-lab-accent/20 bg-lab-accent/5 lg:flex">
+              <div className="hidden items-center gap-2 px-2.5 py-1 rounded-full border border-lab-accent/20 bg-lab-accent/5 lg:flex group cursor-default">
                 <span className="relative flex size-1.5">
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                  <span className="relative inline-flex size-1.5 rounded-full bg-emerald-400" />
+                  <span className="relative inline-flex size-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
                 </span>
-                <span className="text-[10px] font-mono uppercase tracking-wider text-lab-accent/80">Systems Online</span>
+                <span className="text-[10px] font-mono uppercase tracking-wider text-lab-accent/80 group-hover:text-lab-accent transition-colors">Systems Online</span>
               </div>
             </div>
 
-            {/* Center: Desktop Navigation with Animated Pill */}
+            {/* Center: Desktop Navigation */}
             <ul className="hidden items-center gap-1 lg:flex">
               {NAV_LINKS.map((l) => {
                 const isProducts = l.label.toLowerCase().includes("product");
@@ -145,18 +168,18 @@ export function Navbar() {
                         />
                       )}
                       
-                      {/* Animated Hover Pill Background */}
-                      <span className="absolute inset-0 rounded-lg bg-lab-accent/0 transition-colors duration-300 group-hover:bg-lab-accent/10" />
+                      {/* Animated Hover Pill Background (Expanding from center) */}
+                      <span className="absolute inset-0 rounded-lg bg-lab-accent/0 transition-colors duration-300 group-hover:bg-lab-accent/10 scale-95 group-hover:scale-100" />
                     </a>
 
                     {/* Premium Products Mega-Menu */}
                     {isProducts && activeDropdown === "products" && (
-                      <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-80 rounded-xl border border-lab-accent/20 bg-lab-navy/95 p-2 shadow-2xl shadow-black/60 backdrop-blur-2xl animate-[fadeIn_0.2s_ease-out]">
-                        {/* Arrow Pointer */}
-                        <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 size-3 rotate-45 border-l border-t border-lab-accent/20 bg-lab-navy/95" />
+                      <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-80 rounded-xl border border-lab-accent/20 bg-lab-navy/95 p-2 shadow-2xl shadow-black/60 backdrop-blur-2xl animate-[fadeIn_0.25s_ease-out]">
+                        {/* Glowing Arrow Pointer */}
+                        <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 size-3 rotate-45 border-l border-t border-lab-accent/30 bg-lab-navy/95 shadow-[0_0_10px_rgba(99,102,241,0.3)]" />
                         
                         {/* Menu Header */}
-                        <div className="px-3 py-2 border-b border-white/5 mb-1">
+                        <div className="px-3 py-2.5 border-b border-white/5 mb-1">
                           <p className="text-[10px] font-mono uppercase tracking-widest text-lab-ice/40">Core Offerings</p>
                         </div>
 
@@ -164,10 +187,10 @@ export function Navbar() {
                           <a
                             key={item.label}
                             href={item.href}
-                            className="flex items-start gap-3 rounded-lg p-3 transition-all duration-200 hover:bg-lab-accent/10 group/item"
-                            style={{ animationDelay: `${i * 50}ms` }}
+                            className="flex items-start gap-3 rounded-lg p-3 transition-all duration-200 hover:bg-lab-accent/10 group/item animate-[slideIn_0.3s_ease-out_forwards]"
+                            style={{ animationDelay: `${i * 50}ms`, opacity: 0 }}
                           >
-                            <div className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-md bg-lab-blue/30 text-lab-accent group-hover/item:bg-lab-accent group-hover/item:text-lab-navy transition-colors duration-200">
+                            <div className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-md bg-lab-blue/30 text-lab-accent group-hover/item:bg-lab-accent group-hover/item:text-lab-navy transition-all duration-200 group-hover/item:shadow-lg group-hover/item:shadow-lab-accent/20">
                               <FontAwesomeIcon icon={item.icon} className="size-3.5" />
                             </div>
                             <div>
@@ -189,8 +212,9 @@ export function Navbar() {
             <div className="hidden items-center gap-3 lg:flex">
               {/* ⌘K Command Search Trigger */}
               <button 
-                className="group flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-lab-ice/60 transition-all duration-300 hover:border-lab-accent/30 hover:bg-lab-accent/10 hover:text-lab-ice"
-                aria-label="Open search"
+                className="group flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-lab-ice/60 transition-all duration-300 hover:border-lab-accent/30 hover:bg-lab-accent/10 hover:text-lab-ice hover:shadow-[0_0_15px_-3px_rgba(99,102,241,0.2)]"
+                aria-label="Open search (Cmd+K)"
+                onClick={() => console.log("Open search modal")}
               >
                 <FontAwesomeIcon icon={faSearch} className="size-3" />
                 <span className="hidden sm:inline">Search...</span>
@@ -243,7 +267,7 @@ export function Navbar() {
         {open && (
           <div
             id="mobile-menu"
-            className="absolute top-[calc(100%+8px)] inset-x-0 rounded-xl border border-lab-accent/20 bg-lab-navy/95 p-5 shadow-2xl shadow-black/60 backdrop-blur-3xl lg:hidden"
+            className="absolute top-[calc(100%+8px)] inset-x-0 rounded-xl border border-lab-accent/20 bg-lab-navy/95 p-5 shadow-2xl shadow-black/60 backdrop-blur-3xl lg:hidden overflow-hidden"
             style={{
               backgroundImage: "radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.15), transparent 70%)"
             }}
@@ -310,7 +334,7 @@ export function Navbar() {
                 opacity: open ? 1 : 0
               }}
             >
-              <span className="text-lab-accent">softwarelabs@build</span>:<span className="text-blue-400">~</span>$ code. build. ship.<span className="inline-block size-1.5 animate-pulse bg-lab-accent align-middle ml-1 rounded-sm" />
+              <span className="text-lab-accent">softwarelabs@build</span>:<span className="text-blue-400">~</span>$ code. build. ship.<span className="inline-block size-1.5 animate-pulse bg-lab-accent align-middle ml-1 rounded-sm shadow-[0_0_8px_rgba(99,102,241,0.8)]" />
             </p>
           </div>
         )}
@@ -321,6 +345,10 @@ export function Navbar() {
         @keyframes fadeIn {
           from { opacity: 0; transform: translate(-50%, -8px); }
           to { opacity: 1; transform: translate(-50%, 0); }
+        }
+        @keyframes slideIn {
+          from { opacity: 0; transform: translateY(8px); }
+          to { opacity: 1; transform: translateY(0); }
         }
       `}</style>
     </>
