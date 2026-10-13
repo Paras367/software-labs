@@ -7,11 +7,11 @@ import {
   SiNextdotjs, SiReact, SiTypescript, SiTailwindcss, 
   SiSupabase, SiPostgresql, SiPython, SiStripe, SiPrisma, 
   SiFramer, SiVercel, SiCloudflare, SiDocker, SiGithub, 
-  SiOpenai, SiRedis, SiRecharts, SiNodedotjs
+  SiRedis, SiRecharts, SiNodedotjs
 } from "react-icons/si";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUpRightFromSquare, faSearch, faFilter } from "@fortawesome/free-solid-svg-icons";
-
+import { SiOpenai } from "@icons-pack/react-simple-icons";
 // Map tech names to their official brand icons
 const BRAND_ICONS: Record<string, any> = {
   "Next.js": SiNextdotjs,
