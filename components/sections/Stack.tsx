@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import { Container, SectionHeading } from "@/components/ui";
 import { STACK } from "@/lib/content";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowUpRightFromSquare, faSearch, faCode } from "@fortawesome/free-solid-svg-icons";
+import { faArrowUpRightFromSquare, faCode } from "@fortawesome/free-solid-svg-icons";
 
 const CATEGORIES = ["All", "Frontend", "Backend", "DevOps", "AI"] as const;
 
@@ -16,22 +16,22 @@ const BrandIcon = ({ name, className }: { name: string; className?: string }) =>
   const n = name.toLowerCase();
   
   if (n.includes("next")) {
-    return <svg className={className} viewBox="0 0 24 24" fill="currentColor"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 9h-1.5l-4.5-6.5v6.5H10z"/></svg>;
+   return <svg className={className} viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="12"/><path d="M6.5 6.5h2.2l7.1 9.4V6.5H18v11h-2.2L8.7 8.1v9.4H6.5z" fill="white"/><path d="m13.5 13.5 4.8 6.3 1.2-.9-4.8-6.3z" fill="currentColor"/></svg>;
   }
   if (n.includes("react")) {
-    return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/><ellipse cx="12" cy="12" rx="10" ry="4.5"/><ellipse cx="12" cy="12" rx="10" ry="4.5" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="4.5" transform="rotate(120 12 12)"/></svg>;
+   return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/><ellipse cx="12" cy="12" rx="10" ry="4.5"/><ellipse cx="12" cy="12" rx="10" ry="4.5" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="4.5" transform="rotate(120 12 12)"/></svg>;
   }
   if (n.includes("type")) {
-    return <svg className={className} viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h18v18H3V3zm13.5 13.5c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5-1.5.67-1.5 1.5.67 1.5 1.5 1.5zm-6-3h1.5v3h1.5v-3H15v-1.5h-4.5v1.5z"/></svg>;
+    return <svg className={className} viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h18v18H3V3zm9.5 5H7v1.8h2.3V16h1.9V9.8h2.3V8zm5.8 2.2c-.5-.2-1-.3-1.5-.3-1.8 0-2.8.9-2.8 2.2 0 1.1.8 1.7 2.1 2l.6.2c.6.2.8.4.8.7 0 .4-.4.6-1.1.6-.8 0-1.5-.3-2.1-.7l-.8 1.4c.8.5 1.8.8 2.9.8 1.9 0 3-.9 3-2.3 0-1.1-.7-1.7-2-2.1l-.7-.2c-.6-.2-.8-.3-.8-.6s.3-.5.9-.5c.6 0 1.2.2 1.7.5l.8-1.3z"/></svg>;
   }
   if (n.includes("tailwind")) {
-    return <svg className={className} viewBox="0 0 24 24" fill="currentColor"><path d="M12.001 4.8c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624C13.666 10.618 15.027 12 18.001 12c3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C16.337 6.182 14.976 4.8 12.001 4.8z"/></svg>;
+    return <svg className={className} viewBox="0 0 24 24" fill="currentColor"><path d="M12.001 4.8c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624C13.666 10.618 15.027 12 18.001 12c3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C16.337 6.182 14.976 4.8 12.001 4.8zM6.001 12c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624C7.666 17.818 9.027 19.2 12.001 19.2c3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C10.337 13.382 8.976 12 6.001 12z"/></svg>;
   }
   if (n.includes("node")) {
     return <svg className={className} viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.18l7.5 3.75v7.14L12 18.82l-7.5-3.75V7.93L12 4.18z"/></svg>;
   }
   if (n.includes("python")) {
-    return <svg className={className} viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c-2.5 0-2.5 2-2.5 2v2h3v.5H6s-1.5 0-1.5 1.5v3s0 1.5 1.5 1.5h1v-2s0-1.5 1.5-1.5h2s1.5 0 1.5-1.5V4s0-2-2-2h1zm2 5v2s0 1.5-1.5 1.5h-2s-1.5 0-1.5 1.5v2s0 1.5 1.5 1.5h2s1.5 0 1.5-1.5v-1.5s0-1.5-1.5-1.5h-1V11h3s1.5 0 1.5-1.5V6s0-1.5-1.5-1.5h-1.5z"/></svg>;
+   return <svg className={className} viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c-2.5 0-2.5 2-2.5 2v2h3v.5H6s-1.5 0-1.5 1.5v3s0 1.5 1.5 1.5h1v-2s0-1.5 1.5-1.5h2s1.5 0 1.5-1.5V4s0-2-2-2h1zm2 5v2s0 1.5-1.5 1.5h-2s-1.5 0-1.5 1.5v2s0 1.5 1.5 1.5h2s1.5 0 1.5-1.5v-1.5s0-1.5-1.5-1.5h-1V11h3s1.5 0 1.5-1.5V6s0-1.5-1.5-1.5h-1.5z"/></svg>;
   }
   if (n.includes("docker")) {
     return <svg className={className} viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 2.5h2v2h-2v-2zm-3 0h2v2h-2v-2zm-3 0h2v2h-2v-2zm-3 0h2v2h-2v-2zm9 3h2v2h-2v-2zm-3 0h2v2h-2v-2zm-3 0h2v2h-2v-2zm-3 0h2v2h-2v-2zm9 3h2v2h-2v-2zm-3 0h2v2h-2v-2zm-3 0h2v2h-2v-2zm-3 0h2v2h-2v-2zm-3 0h2v2h-2v-2zm12 3h2v2h-2v-2zm-3 0h2v2h-2v-2zm-3 0h2v2h-2v-2zm-3 0h2v2h-2v-2zm-3 0h2v2h-2v-2zm-3 0h2v2h-2v-2zm-3 3h18v2H3v-2z"/></svg>;
@@ -72,20 +72,12 @@ const BrandIcon = ({ name, className }: { name: string; className?: string }) =>
 
 export function Stack() {
   const [activeCategory, setActiveCategory] = useState<(typeof CATEGORIES)[number]>("All");
-  const [searchQuery, setSearchQuery] = useState("");
 
+  // Simple, bulletproof filtering by category only
   const filteredStack = useMemo(() => {
-    const query = searchQuery.toLowerCase().trim();
-    
-    return STACK.filter((tech) => {
-      const matchesCategory = activeCategory === "All" || tech.category === activeCategory;
-      const matchesSearch = !query || 
-        tech.name.toLowerCase().includes(query) || 
-        tech.kind.toLowerCase().includes(query);
-      
-      return matchesCategory && matchesSearch;
-    });
-  }, [activeCategory, searchQuery]);
+    if (activeCategory === "All") return STACK;
+    return STACK.filter((tech) => tech.category === activeCategory);
+  }, [activeCategory]);
 
   return (
     <section id="developers" className="relative bg-lab-navy py-24 sm:py-32 overflow-hidden">
@@ -100,46 +92,30 @@ export function Stack() {
           We use battle-tested, modern technologies to build fast, scalable, and secure products.
         </SectionHeading>
 
-        <div className="flex flex-col sm:flex-row gap-4 mb-12 items-start sm:items-center justify-between">
-          <div className="flex flex-wrap gap-2">
-            {CATEGORIES.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                className={`px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider transition-all duration-300 ${
-                  activeCategory === cat
-                    ? "bg-lab-accent text-lab-navy shadow-lg shadow-lab-accent/20"
-                    : "bg-lab-blue/20 text-lab-ice/60 border border-lab-accent/20 hover:border-lab-accent/40 hover:text-lab-ice"
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-
-          <div className="relative w-full sm:w-64">
-            <FontAwesomeIcon 
-              icon={faSearch} 
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-lab-ice/40 size-3" 
-            />
-            <input
-              type="text"
-              placeholder="Search tech stack..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full rounded-lg border border-lab-accent/20 bg-lab-blue/20 py-2 pl-9 pr-4 text-sm text-lab-ice placeholder-lab-ice/40 focus:border-lab-accent/50 focus:bg-lab-blue/30 focus:outline-none focus:ring-1 focus:ring-lab-accent/50 transition-all"
-            />
-          </div>
+        {/* Centered Category Tabs */}
+        <div className="flex flex-wrap justify-center gap-3 mb-12">
+          {CATEGORIES.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setActiveCategory(cat)}
+              className={`px-5 py-2 rounded-full text-xs font-semibold uppercase tracking-wider transition-all duration-300 ${
+                activeCategory === cat
+                  ? "bg-lab-accent text-lab-navy shadow-lg shadow-lab-accent/20"
+                  : "bg-lab-blue/20 text-lab-ice/60 border border-lab-accent/20 hover:border-lab-accent/40 hover:text-lab-ice"
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
         </div>
 
-        <div className="mb-6 text-sm text-lab-ice/50">
-          Showing {filteredStack.length} of {STACK.length} technologies
+        <div className="mb-8 text-center text-sm text-lab-ice/50">
+          Showing {filteredStack.length} technologies
         </div>
 
         {filteredStack.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
             {filteredStack.map((tech, i) => {
-              // 1. Try custom brand SVG
               const CustomIcon = BrandIcon({ name: tech.name, className: "size-6" });
               
               return (
@@ -149,16 +125,13 @@ export function Stack() {
                   style={{ ["--d" as string]: `${i * 30}ms` }}
                   className="group relative flex items-center gap-3 rounded-xl border border-lab-accent/10 bg-lab-blue/10 p-4 backdrop-blur-sm transition-all duration-300 hover:border-lab-accent/30 hover:bg-lab-blue/20 hover:-translate-y-1 hover:shadow-xl hover:shadow-lab-accent/5"
                 >
-                  {/* 2. Bulletproof Icon Rendering Logic */}
+                  {/* Bulletproof Icon Rendering Logic */}
                   <div className="flex size-10 shrink-0 items-center justify-center rounded-lg border border-lab-accent/20 bg-lab-navy text-lab-ice transition-all duration-300 group-hover:border-lab-accent group-hover:bg-lab-accent group-hover:text-lab-navy group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-lab-accent/20">
                     {CustomIcon ? (
-                      // Case A: We have a custom SVG brand icon
                       CustomIcon
                     ) : typeof tech.icon === 'function' ? (
-                      // Case B: It's a Lucide icon (which is a function component)
                       <tech.icon className="size-5" />
                     ) : (
-                      // Case C: Ultimate fallback to a safe FontAwesome icon
                       <FontAwesomeIcon icon={faCode} className="size-5" />
                     )}
                   </div>
@@ -187,15 +160,13 @@ export function Stack() {
         ) : (
           <div className="py-12 text-center border border-dashed border-lab-accent/20 rounded-xl bg-lab-blue/5">
             <p className="text-lab-ice/50 text-sm mb-2">
-              {searchQuery 
-                ? `No technologies found matching "${searchQuery}"`
-                : `No technologies found in "${activeCategory}" category`}
+              No technologies found in "{activeCategory}" category
             </p>
             <button 
-              onClick={() => { setSearchQuery(""); setActiveCategory("All"); }} 
+              onClick={() => setActiveCategory("All")} 
               className="text-lab-accent hover:underline text-xs font-medium"
             >
-              Clear all filters
+              View all technologies
             </button>
           </div>
         )}
