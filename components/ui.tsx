@@ -90,10 +90,6 @@ export function ButtonLink({
 /*                              SECTION HEADING                               */
 /* -------------------------------------------------------------------------- */
 
-/**
- * Section heading. `path` renders like a terminal prompt (➜ ~/solutions) 
- * to reinforce the engineering lab aesthetic.
- */
 export function SectionHeading({
   path,
   lines,
@@ -113,7 +109,7 @@ export function SectionHeading({
     <header className={cx("max-w-3xl relative", className)} data-reveal>
       {/* Terminal-style Path Indicator */}
       <div className="flex items-center gap-3 mb-6">
-        <span className={cx("h-px w-8 transition-all duration-500 group-hover:w-12", light ? "bg-lab-blue/40" : "bg-lab-accent/40")} />
+        <span className={cx("h-px w-8 transition-all duration-500", light ? "bg-lab-blue/40" : "bg-lab-accent/40")} />
         <p className={cx("font-mono text-xs uppercase tracking-widest flex items-center gap-2", light ? "text-lab-blue" : "text-lab-accent")}>
           <span className="text-lab-accent/50 font-bold">➜</span>
           <span className={cx("size-1.5 rounded-full animate-pulse shadow-[0_0_8px_currentColor]", light ? "bg-lab-blue text-lab-blue" : "bg-lab-accent text-lab-accent")} />
@@ -161,32 +157,17 @@ export function SectionHeading({
 /* -------------------------------------------------------------------------- */
 
 /** 
- * Blinking terminal block cursor with a hard step-end animation (like a real IDE).
+ * Blinking terminal block cursor. 
+ * Uses Tailwind's built-in animate-pulse to avoid server-side build crashes.
  */
 export function Cursor({ className }: { className?: string }) {
   return (
     <span
       aria-hidden
       className={cx(
-        "ml-1 inline-block h-[1.1em] w-[0.6em] translate-y-[0.15em] rounded-[1px] bg-lab-accent shadow-[0_0_12px_2px_rgba(99,102,241,0.6)]",
+        "ml-1 inline-block h-[1.1em] w-[0.6em] translate-y-[0.15em] rounded-[1px] bg-lab-accent animate-pulse shadow-[0_0_12px_2px_rgba(99,102,241,0.6)]",
         className
       )}
-      style={{ 
-        animation: "blink 1s step-end infinite" 
-      }}
     />
   );
-}
-
-/* Inject keyframes for the hard terminal blink */
-const style = document.createElement('style');
-style.innerHTML = `
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
-  }
-`;
-if (typeof document !== 'undefined' && !document.getElementById('cursor-blink-style')) {
-  style.id = 'cursor-blink-style';
-  document.head.appendChild(style);
 }
