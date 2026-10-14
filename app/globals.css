@@ -3,13 +3,14 @@
 @tailwind utilities;
 
 /* ------------------------------------------------------------------ */
-/* Base                                                                */
+/* Base & Variables                                                    */
 /* ------------------------------------------------------------------ */
 :root {
   --lab-navy: #0b2545;
   --lab-blue: #134074;
   --lab-accent: #5b9bd5;
   --lab-ice: #dceaf7;
+  --lab-accent-rgb: 91, 155, 213; /* Added for dynamic rgba usage */
   color-scheme: dark;
 }
 
@@ -24,11 +25,14 @@ body {
   @apply bg-lab-navy font-sans text-lab-ice antialiased;
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
+  /* Subtle noise texture for premium tactile feel */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
 }
 
 ::selection {
-  background: rgba(91, 155, 213, 0.5);
+  background: rgba(var(--lab-accent-rgb), 0.3);
   color: #fff;
+  text-shadow: 0 0 8px rgba(var(--lab-accent-rgb), 0.5);
 }
 
 :focus-visible {
@@ -43,21 +47,68 @@ body {
 }
 
 /* ------------------------------------------------------------------ */
-/* Technical surfaces                                                  */
+/* Custom Scrollbar (Premium Dark Theme)                               */
+/* ------------------------------------------------------------------ */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--lab-navy);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--lab-blue);
+  border-radius: 5px;
+  border: 2px solid var(--lab-navy);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--lab-accent);
+}
+
+/* Firefox Scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--lab-blue) var(--lab-navy);
+}
+
+/* ------------------------------------------------------------------ */
+/* Technical surfaces & Utilities                                      */
 /* ------------------------------------------------------------------ */
 @layer utilities {
   .bg-grid-dark {
     background-image:
-      linear-gradient(rgba(91, 155, 213, 0.11) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(91, 155, 213, 0.11) 1px, transparent 1px);
+      linear-gradient(rgba(var(--lab-accent-rgb), 0.11) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(var(--lab-accent-rgb), 0.11) 1px, transparent 1px);
     background-size: 56px 56px;
   }
+  
   .bg-grid-light {
     background-image:
       linear-gradient(rgba(11, 37, 69, 0.07) 1px, transparent 1px),
       linear-gradient(90deg, rgba(11, 37, 69, 0.07) 1px, transparent 1px);
     background-size: 56px 56px;
   }
+
+  /* Dot Grid Pattern */
+  .bg-dot-grid {
+    background-image: radial-gradient(rgba(var(--lab-accent-rgb), 0.2) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  /* Crosshair Grid */
+  .bg-crosshair {
+    background-image:
+      linear-gradient(rgba(var(--lab-accent-rgb), 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(var(--lab-accent-rgb), 0.1) 1px, transparent 1px),
+      linear-gradient(rgba(var(--lab-accent-rgb), 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(var(--lab-accent-rgb), 0.05) 1px, transparent 1px);
+    background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
+    background-position: -1px -1px;
+  }
+
   .mask-radial {
     -webkit-mask-image: radial-gradient(ellipse 70% 60% at 60% 35%, #000 25%, transparent 78%);
     mask-image: radial-gradient(ellipse 70% 60% at 60% 35%, #000 25%, transparent 78%);
@@ -70,13 +121,29 @@ body {
     color: transparent;
     -webkit-text-stroke: 1.5px currentColor;
   }
+
+  /* Premium Text Gradient */
+  .text-gradient-accent {
+    background: linear-gradient(135deg, var(--lab-ice) 0%, var(--lab-accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Glassmorphism */
+  .glass {
+    background: rgba(11, 37, 69, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(var(--lab-accent-rgb), 0.1);
+  }
 }
 
 @layer components {
   /* Radial blue glow used behind hero + CTA */
   .glow-field {
     background:
-      radial-gradient(60% 55% at 78% 28%, rgba(91, 155, 213, 0.24), transparent 70%),
+      radial-gradient(60% 55% at 78% 28%, rgba(var(--lab-accent-rgb), 0.24), transparent 70%),
       radial-gradient(50% 45% at 8% 92%, rgba(19, 64, 116, 0.85), transparent 72%);
   }
 
@@ -86,10 +153,29 @@ body {
       120deg,
       rgba(19, 64, 116, 0.55),
       rgba(11, 37, 69, 0) 38%,
-      rgba(91, 155, 213, 0.13) 68%,
+      rgba(var(--lab-accent-rgb), 0.13) 68%,
       rgba(19, 64, 116, 0.5)
     );
     background-size: 220% 220%;
+    animation: sheen 8s ease infinite;
+  }
+
+  /* Subtle Scanlines (CRT/Lab Monitor Effect) */
+  .scanlines::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0),
+      rgba(255, 255, 255, 0) 50%,
+      rgba(0, 0, 0, 0.1) 50%,
+      rgba(0, 0, 0, 0.1)
+    );
+    background-size: 100% 4px;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.3;
   }
 
   /* Crop marks — two opposite corners, like a printed blueprint */
@@ -137,6 +223,24 @@ body {
     background-position: 0 100%, 0 100%;
     opacity: 0.4;
   }
+}
+
+/* ------------------------------------------------------------------ */
+/* Animations                                                          */
+/* ------------------------------------------------------------------ */
+@keyframes sheen {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 10px rgba(var(--lab-accent-rgb), 0.4); }
+  50% { box-shadow: 0 0 20px rgba(var(--lab-accent-rgb), 0.8); }
 }
 
 /* ------------------------------------------------------------------ */
