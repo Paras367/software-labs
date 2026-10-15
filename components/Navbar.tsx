@@ -527,7 +527,7 @@ export function Navbar() {
   }, [flash]);
 
   const paletteItems = useMemo<PaletteItem[]>(() => {
-    const hasContact = NAV_LINKS.some((l) => String(l.href) === "#contact");
+    const hasContact = NAV_LINKS.some((l) => String(l.href) === "https://softwarelabs.vercel.app/#contact");
     return [
       ...NAV_LINKS.map<PaletteItem>((l) => ({
         id: `nav-${l.href}`,
@@ -544,9 +544,9 @@ export function Navbar() {
               id: "contact",
               group: "Jump to" as const,
               label: "Contact",
-              hint: "#contact",
+              hint: "https://softwarelabs.vercel.app/#contact",
               icon: faArrowRight,
-              run: () => void scrollToHash("#contact"),
+              run: () => void scrollToHash("https://softwarelabs.vercel.app/#contact"),
             },
           ]),
       ...PRODUCTS.map<PaletteItem>((p) => ({
@@ -564,7 +564,7 @@ export function Navbar() {
         label: "Back to top",
         icon: faArrowUp,
         keywords: "home start scroll",
-        run: () => void scrollToHash("#home"),
+        run: () => void scrollToHash("https://softwarelabs.vercel.app/"),
       },
       {
         id: "copy",
