@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
-import { Container, SectionHeading, ButtonLink } from "@/components/ui";
+import { Container, ButtonLink } from "@/components/ui";
 import { SITE } from "@/lib/site";
 import { PRINCIPLES, STEPS } from "@/lib/content";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -65,7 +65,8 @@ export default function AboutPage() {
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff03_1px,transparent_1px),linear-gradient(to_bottom,#ffffff03_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none" />
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-96 bg-lab-accent/5 blur-[120px] pointer-events-none" />
 
-        <Container className="relative z-10 py-24 sm:py-32">
+        {/* Added pt-32 to account for fixed navbar */}
+        <Container className="relative z-10 pt-32 pb-24 sm:pt-40 sm:pb-32">
           
           {/* 1. Crisp Hero Section - MAXIMUM CONTRAST */}
           <motion.div 
@@ -73,7 +74,7 @@ export default function AboutPage() {
             className="text-center max-w-3xl mx-auto mb-24"
           >
             <motion.p variants={fadeInUp} custom={0} className="font-mono text-xs uppercase tracking-widest text-lab-accent mb-4 font-bold">~/about</motion.p>
-            <motion.h1 variants={fadeInUp} custom={1} className="text-4xl sm:text-6xl font-extrabold text-white mb-6 uppercase leading-[0.95] tracking-tight drop-shadow-lg">
+            <motion.h1 variants={fadeInUp} custom={1} className="text-4xl sm:text-6xl font-extrabold text-white mb-6 uppercase leading-[0.95] tracking-tight">
               The Engineering Partner Behind <span className="text-lab-accent">Growing Businesses</span>
             </motion.h1>
             <motion.p variants={fadeInUp} custom={2} className="text-lg sm:text-xl text-white mb-8 leading-relaxed font-medium">
@@ -91,7 +92,21 @@ export default function AboutPage() {
             className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center mb-32"
           >
             <div>
-              <SectionHeading path="mission" lines={["Why We", "Exist"]} className="mb-6" />
+              {/* Inline Section Heading with pure white text */}
+              <div className="mb-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="h-px w-8 bg-lab-accent/60" />
+                  <p className="font-mono text-xs uppercase tracking-widest text-lab-accent flex items-center gap-2">
+                    <span className="size-1.5 rounded-full bg-lab-accent animate-pulse" />
+                    ~/mission
+                  </p>
+                </div>
+                <h2 className="text-[clamp(2rem,5.2vw,3.75rem)] font-extrabold uppercase leading-[0.95] tracking-tight text-white">
+                  <span className="block">Why We</span>
+                  <span className="block bg-clip-text text-transparent bg-gradient-to-r from-white to-lab-accent">Exist</span>
+                </h2>
+              </div>
+              
               <p className="text-white mb-6 text-lg leading-relaxed font-medium">
                 Great software shouldn't require a massive team or endless delays. We exist to bridge the gap between a great idea and a shipped product.
               </p>
@@ -132,7 +147,21 @@ export default function AboutPage() {
             initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={container}
             className="mb-32"
           >
-            <SectionHeading path="leadership" lines={["Meet the", "Founder"]} className="mb-12" />
+            {/* Inline Section Heading */}
+            <div className="mb-12">
+              <div className="flex items-center gap-3 mb-4">
+                <span className="h-px w-8 bg-lab-accent/60" />
+                <p className="font-mono text-xs uppercase tracking-widest text-lab-accent flex items-center gap-2">
+                  <span className="size-1.5 rounded-full bg-lab-accent animate-pulse" />
+                  ~/leadership
+                </p>
+              </div>
+              <h2 className="text-[clamp(2rem,5.2vw,3.75rem)] font-extrabold uppercase leading-[0.95] tracking-tight text-white">
+                <span className="block">Meet the</span>
+                <span className="block bg-clip-text text-transparent bg-gradient-to-r from-white to-lab-accent">Founder</span>
+              </h2>
+            </div>
+
             <motion.div variants={fadeInUp} custom={0} className="max-w-4xl mx-auto grid md:grid-cols-[1fr_1.5fr] gap-8 items-center p-8 rounded-2xl border border-lab-accent/30 bg-lab-blue/30 backdrop-blur-sm">
               <div className="relative aspect-square rounded-xl overflow-hidden border border-lab-accent/40 bg-lab-navy flex items-center justify-center">
                 <FontAwesomeIcon icon={faCode} className="size-16 text-lab-accent/60" />
@@ -167,7 +196,21 @@ export default function AboutPage() {
             initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={container}
             className="mb-32"
           >
-            <SectionHeading path="values" lines={["Our Engineering", "Manifesto"]} className="mb-12" />
+            {/* Inline Section Heading */}
+            <div className="mb-12">
+              <div className="flex items-center gap-3 mb-4">
+                <span className="h-px w-8 bg-lab-accent/60" />
+                <p className="font-mono text-xs uppercase tracking-widest text-lab-accent flex items-center gap-2">
+                  <span className="size-1.5 rounded-full bg-lab-accent animate-pulse" />
+                  ~/values
+                </p>
+              </div>
+              <h2 className="text-[clamp(2rem,5.2vw,3.75rem)] font-extrabold uppercase leading-[0.95] tracking-tight text-white">
+                <span className="block">Our Engineering</span>
+                <span className="block bg-clip-text text-transparent bg-gradient-to-r from-white to-lab-accent">Manifesto</span>
+              </h2>
+            </div>
+
             <motion.div variants={container} className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {PRINCIPLES.slice(0, 6).map((principle, i) => {
                 const IconComponent = principle.icon;
@@ -190,7 +233,21 @@ export default function AboutPage() {
             initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={container}
             className="mb-32"
           >
-            <SectionHeading path="journey" lines={["Our", "Journey"]} className="mb-12" />
+            {/* Inline Section Heading */}
+            <div className="mb-12">
+              <div className="flex items-center gap-3 mb-4">
+                <span className="h-px w-8 bg-lab-accent/60" />
+                <p className="font-mono text-xs uppercase tracking-widest text-lab-accent flex items-center gap-2">
+                  <span className="size-1.5 rounded-full bg-lab-accent animate-pulse" />
+                  ~/journey
+                </p>
+              </div>
+              <h2 className="text-[clamp(2rem,5.2vw,3.75rem)] font-extrabold uppercase leading-[0.95] tracking-tight text-white">
+                <span className="block">Our</span>
+                <span className="block bg-clip-text text-transparent bg-gradient-to-r from-white to-lab-accent">Journey</span>
+              </h2>
+            </div>
+
             <div className="relative">
               {/* Desktop Connecting Line */}
               <div className="hidden lg:block absolute top-8 left-0 right-0 h-px bg-gradient-to-r from-transparent via-lab-accent/60 to-transparent" />
@@ -222,7 +279,21 @@ export default function AboutPage() {
             initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={container}
             className="mb-32"
           >
-            <SectionHeading path="process" lines={["How We", "Deliver"]} className="mb-12" />
+            {/* Inline Section Heading */}
+            <div className="mb-12">
+              <div className="flex items-center gap-3 mb-4">
+                <span className="h-px w-8 bg-lab-accent/60" />
+                <p className="font-mono text-xs uppercase tracking-widest text-lab-accent flex items-center gap-2">
+                  <span className="size-1.5 rounded-full bg-lab-accent animate-pulse" />
+                  ~/process
+                </p>
+              </div>
+              <h2 className="text-[clamp(2rem,5.2vw,3.75rem)] font-extrabold uppercase leading-[0.95] tracking-tight text-white">
+                <span className="block">How We</span>
+                <span className="block bg-clip-text text-transparent bg-gradient-to-r from-white to-lab-accent">Deliver</span>
+              </h2>
+            </div>
+
             <motion.div variants={container} className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {STEPS.map((step, i) => {
                 const IconComponent = step.icon;
@@ -246,7 +317,21 @@ export default function AboutPage() {
             initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={container}
             className="mb-32"
           >
-            <SectionHeading path="testimonials" lines={["Trusted", "By Teams"]} className="mb-12" />
+            {/* Inline Section Heading */}
+            <div className="mb-12">
+              <div className="flex items-center gap-3 mb-4">
+                <span className="h-px w-8 bg-lab-accent/60" />
+                <p className="font-mono text-xs uppercase tracking-widest text-lab-accent flex items-center gap-2">
+                  <span className="size-1.5 rounded-full bg-lab-accent animate-pulse" />
+                  ~/testimonials
+                </p>
+              </div>
+              <h2 className="text-[clamp(2rem,5.2vw,3.75rem)] font-extrabold uppercase leading-[0.95] tracking-tight text-white">
+                <span className="block">Trusted</span>
+                <span className="block bg-clip-text text-transparent bg-gradient-to-r from-white to-lab-accent">By Teams</span>
+              </h2>
+            </div>
+
             <motion.div variants={container} className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {TESTIMONIALS.map((t, i) => (
                 <motion.div key={i} variants={fadeInUp} custom={i} className="p-8 rounded-2xl border border-lab-accent/30 bg-lab-blue/30 backdrop-blur-sm hover:border-lab-accent/50 transition-all duration-300">
@@ -271,7 +356,7 @@ export default function AboutPage() {
           >
             <div className="absolute inset-0 bg-lab-accent/5 blur-[100px] pointer-events-none" />
             <div className="relative z-10 max-w-2xl mx-auto">
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-4 drop-shadow-lg">
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-4">
                 Ready to Build Your <span className="text-lab-accent">Business Platform</span>?
               </h2>
               <p className="text-white mb-8 leading-relaxed font-medium">
