@@ -10,6 +10,7 @@ import {
   type KeyboardEvent as ReactKeyboardEvent,
   type MouseEvent as ReactMouseEvent,
 } from "react";
+import { usePathname } from "next/navigation"; // ✅ Added for robust route detection
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import {
@@ -20,6 +21,7 @@ import {
   faChevronDown,
   faCode,
   faCopy,
+  faExternalLinkAlt,
   faRocket,
   faSearch,
   faTerminal,
@@ -27,24 +29,23 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { Logo } from "@/components/Logo";
 import { ButtonLink } from "@/components/ui";
-import { NAV_LINKS } from "@/lib/site";
+import { NAV_LINKS, SITE } from "@/lib/site"; // ✅ Ensure SITE is imported
 import { cx } from "@/lib/utils";
 
 /* ───────────────────────── constants ───────────────────────── */
 
 const SPRING_EASE = "cubic-bezier(0.25, 0.1, 0.25, 1)";
-const NAV_OFFSET = 88; // fixed navbar height + breathing room for anchor jumps
-const GITHUB_URL = "https://github.com/Paras367";
-const FOCUS_RING =
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lab-accent/60";
+const NAV_OFFSET = 88; 
+const FOCUS_RING = "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lab-accent/60";
 const FOCUSABLE = 'a[href],button:not([disabled]),input,[tabindex]:not([tabindex="-1"])';
 
 type Product = { label: string; href: string; icon: IconDefinition; desc: string };
 
+// ✅ FIXED: Use relative paths so it works on localhost, preview, and production universally
 const PRODUCTS: Product[] = [
-  { label: "Source Code", href: "https://softwarelabs.vercel.app/#products", icon: faCode, desc: "Premium, reusable boilerplates" },
-  { label: "AI Systems", href: "https://softwarelabs.vercel.app/#products", icon: faBolt, desc: "RAG-powered intelligent workflows" },
-  { label: "Dev Tools", href: "https://softwarelabs.vercel.app/#products", icon: faTerminal, desc: "CLIs and SDKs for engineers" },
+  { label: "Source Code", href: "/#products", icon: faCode, desc: "Premium, reusable boilerplates" },
+  { label: "AI Systems", href: "/#products", icon: faBolt, desc: "RAG-powered intelligent workflows" },
+  { label: "Dev Tools", href: "/#products", icon: faTerminal, desc: "CLIs and SDKs for engineers" },
 ];
 
 type PaletteItem = {
@@ -55,6 +56,7 @@ type PaletteItem = {
   keywords?: string;
   icon: IconDefinition;
   run: () => void;
+  external?: boolean;
 };
 
 const useIsoLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
@@ -67,22 +69,24 @@ const reducedMotion = () =>
 /** Smooth-scroll to #id with navbar offset, update URL, move focus for screen readers. */
 function scrollToHash(href: string, instant = false): boolean {
   if (typeof window === "undefined") return false;
+  
+  // Handle root/home explicitly
+  if (href === "/" || href === "/#home" || href === "#home") {
+    window.scrollTo({ top: 0, behavior: instant || reducedMotion() ? "auto" : "smooth" });
+    window.history.replaceState(null, "", "/");
+    return true;
+  }
+
   const behavior: ScrollBehavior = instant || reducedMotion() ? "auto" : "smooth";
-  const id = decodeURIComponent(href.replace(/^#/, ""));
+  const id = decodeURIComponent(href.replace(/^.*#/, "")); // handle both "#id" and "/path#id"
   const el = id ? document.getElementById(id) : null;
 
-  if (!el) {
-    if (href === "https://softwarelabs.vercel.app/" || href === "#home") {
-      window.scrollTo({ top: 0, behavior });
-      window.history.replaceState(null, "", window.location.pathname + window.location.search);
-      return true;
-    }
-    return false;
-  }
+  if (!el) return false; // Let Next.js handle navigation if it's a different page
 
   const top = el.getBoundingClientRect().top + window.scrollY - NAV_OFFSET;
   window.scrollTo({ top: Math.max(0, top), behavior });
   window.history.replaceState(null, "", href);
+  
   if (!el.hasAttribute("tabindex")) el.setAttribute("tabindex", "-1");
   el.focus({ preventScroll: true });
   return true;
@@ -143,7 +147,6 @@ function CommandPalette({
   const results = useMemo(() => filterItems(items, query), [items, query]);
   const grouped = query.trim() === "";
 
-  // open → remember who had focus, reset, focus input. close → give focus back.
   useEffect(() => {
     if (open) {
       returnFocus.current = document.activeElement as HTMLElement | null;
@@ -156,7 +159,6 @@ function CommandPalette({
     returnFocus.current = null;
   }, [open]);
 
-  // keep highlighted row visible while arrowing through a long list
   useEffect(() => {
     listRef.current
       ?.querySelector<HTMLElement>('[data-active="true"]')
@@ -164,7 +166,7 @@ function CommandPalette({
   }, [index, results]);
 
   const choose = (item: PaletteItem) => {
-    returnFocus.current = null; // the action decides where focus goes
+    returnFocus.current = null;
     onClose();
     window.setTimeout(item.run, 80);
   };
@@ -239,7 +241,7 @@ function CommandPalette({
         >
           {results.length === 0 && (
             <li className="px-3 py-8 text-center text-sm text-lab-ice/50" role="presentation">
-              Kuch nahi mila for “{query}”. Try “products” or “contact”.
+              No results for “{query}”. Try “products” or “contact”.
             </li>
           )}
 
@@ -269,11 +271,14 @@ function CommandPalette({
                   <span className="font-medium">{it.label}</span>
                   {it.hint && <span className="ml-2 text-xs text-lab-ice/40">{it.hint}</span>}
                 </span>
-                {i === index && (
-                  <kbd className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 font-mono text-[10px] text-lab-ice/60">
-                    ↵
-                  </kbd>
-                )}
+                <div className="flex items-center gap-2">
+                  {it.external && <FontAwesomeIcon icon={faExternalLinkAlt} className="size-2.5 text-lab-ice/40" />}
+                  {i === index && (
+                    <kbd className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 font-mono text-[10px] text-lab-ice/60">
+                      ↵
+                    </kbd>
+                  )}
+                </div>
               </div>
             </li>
           ))}
@@ -291,11 +296,12 @@ function CommandPalette({
 /* ───────────────────────── navbar ───────────────────────── */
 
 export function Navbar() {
+  const pathname = usePathname(); // ✅ Added for robust route detection
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
-  const [open, setOpen] = useState(false); // mobile drawer
+  const [open, setOpen] = useState(false);
   const [mobileProducts, setMobileProducts] = useState(false);
-  const [dropdown, setDropdown] = useState(false); // desktop products menu
+  const [dropdown, setDropdown] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [activeId, setActiveId] = useState("");
   const [hoverHref, setHoverHref] = useState<string | null>(null);
@@ -316,17 +322,16 @@ export function Navbar() {
   const sectionIds = useMemo(
     () =>
       NAV_LINKS.map((l) => l.href)
-        .filter((h) => h.startsWith("#") && h.length > 1)
-        .map((h) => h.slice(1)),
+        .filter((h) => h.startsWith("#") || h.includes("#"))
+        .map((h) => h.split("#")[1]),
     []
   );
 
-  /* platform-aware shortcut label (set after mount → no hydration mismatch) */
   useEffect(() => {
     setModKey(/Mac|iPhone|iPad/i.test(navigator.userAgent) ? "⌘" : "Ctrl");
   }, []);
 
-  /* scroll: progress bar (no re-render), solid state, hide-on-scroll-down / show-on-scroll-up */
+  /* scroll: progress bar, solid state, hide-on-scroll-down / show-on-scroll-up */
   useEffect(() => {
     let lastY = window.scrollY;
     let raf = 0;
@@ -390,7 +395,7 @@ export function Navbar() {
       left: el.offsetLeft,
       width: el.offsetWidth,
       show: true,
-      instant: !p || !p.show, // first appearance snaps into place instead of flying in from the left
+      instant: !p || !p.show,
     }));
   }, [targetHref]);
   useIsoLayoutEffect(measure, [measure]);
@@ -411,7 +416,7 @@ export function Navbar() {
     };
   }, []);
 
-  /* global shortcuts: ⌘/Ctrl+K toggles palette, "/" opens it, Esc closes drawer + dropdown */
+  /* global shortcuts */
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
@@ -450,7 +455,7 @@ export function Navbar() {
     return () => mq.removeEventListener("change", onMq);
   }, []);
 
-  /* scroll lock (with scrollbar compensation so the page doesn't jump) */
+  /* scroll lock */
   const lock = open || paletteOpen;
   useEffect(() => {
     if (!lock) return;
@@ -465,7 +470,6 @@ export function Navbar() {
     };
   }, [lock]);
 
-  /* cleanup timers */
   useEffect(
     () => () => {
       window.clearTimeout(closeTimer.current);
@@ -474,7 +478,6 @@ export function Navbar() {
     []
   );
 
-  /* ── dropdown hover intent ── */
   const openDropdown = () => {
     window.clearTimeout(closeTimer.current);
     setDropdown(true);
@@ -500,17 +503,15 @@ export function Navbar() {
     }
   };
 
-  /* ── one click handler for every in-header anchor: smooth scroll + close menus ── */
   const onHeaderClick = (e: ReactMouseEvent<HTMLElement>) => {
     const a = (e.target as HTMLElement).closest("a");
     if (!a || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
     const href = a.getAttribute("href") ?? "";
-    if (href.startsWith("#") && scrollToHash(href)) e.preventDefault();
+    if ((href.startsWith("#") || href.includes("#")) && scrollToHash(href)) e.preventDefault();
     setOpen(false);
     setDropdown(false);
   };
 
-  /* ── toast + palette actions ── */
   const flash = useCallback((msg: string) => {
     setToast(msg);
     window.clearTimeout(toastTimer.current);
@@ -520,14 +521,13 @@ export function Navbar() {
   const copyLink = useCallback(async () => {
     try {
       await navigator.clipboard.writeText(window.location.href);
-      flash("Link copied");
+      flash("Link copied to clipboard");
     } catch {
       flash("Couldn't copy — grab it from the address bar");
     }
   }, [flash]);
 
   const paletteItems = useMemo<PaletteItem[]>(() => {
-    const hasContact = NAV_LINKS.some((l) => String(l.href) === "https://softwarelabs.vercel.app/#contact");
     return [
       ...NAV_LINKS.map<PaletteItem>((l) => ({
         id: `nav-${l.href}`,
@@ -537,18 +537,6 @@ export function Navbar() {
         icon: faArrowRight,
         run: () => void scrollToHash(l.href),
       })),
-      ...(hasContact
-        ? []
-        : [
-            {
-              id: "contact",
-              group: "Jump to" as const,
-              label: "Contact",
-              hint: "https://softwarelabs.vercel.app/#contact",
-              icon: faArrowRight,
-              run: () => void scrollToHash("https://softwarelabs.vercel.app/#contact"),
-            },
-          ]),
       ...PRODUCTS.map<PaletteItem>((p) => ({
         id: `prod-${p.label}`,
         group: "Products",
@@ -564,7 +552,7 @@ export function Navbar() {
         label: "Back to top",
         icon: faArrowUp,
         keywords: "home start scroll",
-        run: () => void scrollToHash("https://softwarelabs.vercel.app/"),
+        run: () => void scrollToHash("/"),
       },
       {
         id: "copy",
@@ -578,10 +566,11 @@ export function Navbar() {
         id: "github",
         group: "Quick actions",
         label: "Open GitHub",
-        hint: "github.com/Paras367",
+        hint: SITE.github,
         icon: faTerminal,
         keywords: "code repo source profile",
-        run: () => void window.open(GITHUB_URL, "_blank", "noopener,noreferrer"),
+        external: true,
+        run: () => void window.open(SITE.github, "_blank", "noopener,noreferrer"),
       },
     ];
   }, [copyLink]);
@@ -594,9 +583,16 @@ export function Navbar() {
   const solid = scrolled || open;
   const isHidden = hidden && !open && !paletteOpen && !dropdown && !focusIn;
 
+  // ✅ Smart active state: checks both hash (for single page) and pathname (for multi-page like /about)
+  const isActiveLink = (href: string) => {
+    if (href === "/" || href === "/#home") return pathname === "/";
+    if (href.startsWith("/")) return pathname === href.split("#")[0];
+    return activeId !== "" && href === `#${activeId}`;
+  };
+
   return (
     <>
-      {/* 1 ─ Scroll progress (width written straight to the DOM, zero re-renders) */}
+      {/* 1 ─ Scroll progress */}
       <div className="pointer-events-none fixed inset-x-0 top-0 z-[60] h-[2px] bg-lab-navy/50" aria-hidden="true">
         <div
           ref={progressRef}
@@ -610,7 +606,7 @@ export function Navbar() {
         </div>
       </div>
 
-      {/* 2 ─ Mobile backdrop (tap outside to close) */}
+      {/* 2 ─ Mobile backdrop */}
       <div
         aria-hidden="true"
         onClick={() => setOpen(false)}
@@ -647,7 +643,6 @@ export function Navbar() {
           )}
           style={{ transitionTimingFunction: SPRING_EASE }}
         >
-          {/* decorative layers live in their own clipped box so the dropdown can overflow the bar */}
           <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-xl" aria-hidden="true">
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff06_1px,transparent_1px),linear-gradient(to_bottom,#ffffff06_1px,transparent_1px)] bg-[size:24px_24px] opacity-40" />
             <div
@@ -669,7 +664,7 @@ export function Navbar() {
             {/* Left: logo + status */}
             <div className="flex items-center gap-4">
               <a
-                href="#home"
+                href="/"
                 aria-label="SOFTWARELABS — home"
                 className={cx(
                   "relative z-10 rounded-md transition-transform duration-300 hover:scale-105 active:scale-95",
@@ -713,7 +708,7 @@ export function Navbar() {
 
               {NAV_LINKS.map((l) => {
                 const hasMenu = l.label.toLowerCase().includes("product");
-                const isActive = activeId !== "" && l.href === `#${activeId}`;
+                const isActive = isActiveLink(l.href);
                 const lit = isActive || hoverHref === l.href;
 
                 return (
@@ -738,7 +733,7 @@ export function Navbar() {
                     <div className="flex items-center">
                       <a
                         href={l.href}
-                        aria-current={isActive ? "location" : undefined}
+                        aria-current={isActive ? "page" : undefined}
                         className={cx(
                           "rounded-lg py-1.5 pl-3.5 text-sm font-medium transition-colors duration-300",
                           hasMenu ? "pr-1" : "pr-3.5",
@@ -780,7 +775,6 @@ export function Navbar() {
                     </div>
 
                     {hasMenu && dropdown && (
-                      /* pt-3 acts as an invisible hover bridge so the menu doesn't flicker shut */
                       <div className="absolute left-1/2 top-full w-80 -translate-x-1/2 pt-3">
                         <div
                           id="products-menu"
@@ -842,7 +836,7 @@ export function Navbar() {
               </button>
 
               <a
-                href="#contact"
+                href="/#contact"
                 className={cx(
                   "rounded-lg px-3.5 py-1.5 text-sm font-medium text-lab-ice/80 transition-all duration-300 hover:bg-white/5 hover:text-white",
                   FOCUS_RING
@@ -852,7 +846,7 @@ export function Navbar() {
               </a>
 
               <ButtonLink
-                href="#products"
+                href="/#products"
                 className="group relative overflow-hidden !bg-lab-accent !px-4 !py-1.5 font-bold !text-lab-navy shadow-lg shadow-lab-accent/20 transition-all duration-300 hover:scale-[1.02] hover:shadow-lab-accent/40 active:scale-[0.98]"
               >
                 <span className="relative z-10 flex items-center gap-1.5 text-xs uppercase tracking-wide">
@@ -914,7 +908,7 @@ export function Navbar() {
           </nav>
         </div>
 
-        {/* 4 ─ Mobile drawer (always mounted → real enter/exit transitions; `invisible` removes it from tab order) */}
+        {/* 4 ─ Mobile drawer */}
         <div
           id="mobile-menu"
           aria-hidden={!open}
@@ -939,7 +933,7 @@ export function Navbar() {
           <ul className="divide-y divide-white/5 border-y border-white/5">
             {NAV_LINKS.map((l, i) => {
               const hasMenu = l.label.toLowerCase().includes("product");
-              const isActive = activeId !== "" && l.href === `#${activeId}`;
+              const isActive = isActiveLink(l.href);
               return (
                 <li
                   key={l.href}
@@ -952,7 +946,7 @@ export function Navbar() {
                   <div className="flex items-center">
                     <a
                       href={l.href}
-                      aria-current={isActive ? "location" : undefined}
+                      aria-current={isActive ? "page" : undefined}
                       className={cx(
                         "group flex flex-1 items-center justify-between py-4 text-lg font-semibold transition-colors duration-300 hover:text-lab-accent",
                         isActive ? "text-lab-accent" : "text-lab-ice/90",
@@ -1036,10 +1030,10 @@ export function Navbar() {
             )}
             style={{ transitionDelay: open ? `${NAV_LINKS.length * 60 + 160}ms` : "0ms" }}
           >
-            <ButtonLink href="#products" className="w-full justify-center !py-2.5 text-sm shadow-lg shadow-lab-accent/20">
+            <ButtonLink href="/#products" className="w-full justify-center !py-2.5 text-sm shadow-lg shadow-lab-accent/20">
               Explore Products
             </ButtonLink>
-            <ButtonLink href="#contact" variant="secondary" className="w-full justify-center !py-2.5 text-sm">
+            <ButtonLink href="/#contact" variant="secondary" className="w-full justify-center !py-2.5 text-sm">
               Contact Us
             </ButtonLink>
           </div>
@@ -1052,7 +1046,7 @@ export function Navbar() {
         </div>
       </header>
 
-      {/* 5 ─ Command palette (outside <header> so backdrop-blur/transform never traps its fixed positioning) */}
+      {/* 5 ─ Command palette */}
       <CommandPalette
         open={paletteOpen}
         onClose={() => setPaletteOpen(false)}
