@@ -42,9 +42,9 @@ const FOCUSABLE = 'a[href],button:not([disabled]),input,[tabindex]:not([tabindex
 type Product = { label: string; href: string; icon: IconDefinition; desc: string };
 
 const PRODUCTS: Product[] = [
-  { label: "Source Code", href: "#products", icon: faCode, desc: "Premium, reusable boilerplates" },
-  { label: "AI Systems", href: "#products", icon: faBolt, desc: "RAG-powered intelligent workflows" },
-  { label: "Dev Tools", href: "#products", icon: faTerminal, desc: "CLIs and SDKs for engineers" },
+  { label: "Source Code", href: "https://softwarelabs.vercel.app/#products", icon: faCode, desc: "Premium, reusable boilerplates" },
+  { label: "AI Systems", href: "https://softwarelabs.vercel.app/#products", icon: faBolt, desc: "RAG-powered intelligent workflows" },
+  { label: "Dev Tools", href: "https://softwarelabs.vercel.app/#products", icon: faTerminal, desc: "CLIs and SDKs for engineers" },
 ];
 
 type PaletteItem = {
@@ -72,7 +72,7 @@ function scrollToHash(href: string, instant = false): boolean {
   const el = id ? document.getElementById(id) : null;
 
   if (!el) {
-    if (href === "#" || href === "#home") {
+    if (href === "https://softwarelabs.vercel.app/" || href === "#home") {
       window.scrollTo({ top: 0, behavior });
       window.history.replaceState(null, "", window.location.pathname + window.location.search);
       return true;
