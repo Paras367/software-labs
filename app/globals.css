@@ -78,6 +78,33 @@ body {
   outline-color: var(--lab-blue);
 }
 
+
+  @layer utilities {
+  /* Vibrant Mesh Background (Use on Hero sections) */
+  .bg-mesh-vibrant {
+    background-color: var(--lab-navy);
+    background-image: 
+      radial-gradient(at 0% 0%, rgba(129, 140, 248, 0.15) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, rgba(34, 211, 238, 0.15) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, rgba(129, 140, 248, 0.1) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, rgba(34, 211, 238, 0.1) 0px, transparent 50%);
+  }
+
+  /* Vibrant Border Glow (Use on featured cards) */
+  .border-glow-accent {
+    border: 1px solid rgba(129, 140, 248, 0.3);
+    box-shadow: 0 0 15px -3px rgba(129, 140, 248, 0.2), inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+  }
+
+  /* Vibrant Text Gradient (Use on key headings) */
+  .text-gradient-vibrant {
+    background: linear-gradient(135deg, #f1f5f9 0%, #818cf8 40%, #22d3ee 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 12px rgba(129, 140, 248, 0.4));
+  }
+}
 /* ------------------------------------------------------------------ */
 /* Custom Scrollbar (Ultra-Premium Dark Theme)                         */
 /* ------------------------------------------------------------------ */
