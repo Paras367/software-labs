@@ -158,7 +158,7 @@ export const PRODUCTS: Product[] = [
     description: "A beautiful, story-driven e-commerce template tailored for specialty coffee, food, or sustainable brands. Features subscription flows and social impact metrics.",
     categories: ["templates"],
     preview: "commerce",
-    techStack: ["Next.js", "React", "Tailwind CSS", "Framer Motion"],
+    techStack: ["Svelte", "Next.js", "React", "Tailwind CSS", "Framer Motion"],
     features: ["Subscription Support", "Impact Metrics Dashboard", "Story-Driven Layout", "Elegant Typography"],
     badges: ["Production Ready"],
     version: "1.0.0",
